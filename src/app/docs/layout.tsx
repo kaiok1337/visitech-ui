@@ -24,9 +24,9 @@ interface NavItemProps {
 }
 
 const NavItem = ({ href, icon, children, isActive }: NavItemProps) => {
-  const bgActive = useColorModeValue('blue.50', 'blue.900');
-  const bgHover = useColorModeValue('gray.100', 'gray.700');
   const accentColor = useColorModeValue('brand.accent1', 'brand.accent1');
+  const hoverBg = useColorModeValue('gray.100', 'gray.700');
+  const activeBg = useColorModeValue('blue.50', 'blue.900');
   
   return (
     <NextLink href={href} passHref>
@@ -38,10 +38,16 @@ const NavItem = ({ href, icon, children, isActive }: NavItemProps) => {
         borderRadius="md"
         fontWeight={isActive ? "semibold" : "normal"}
         color={isActive ? accentColor : "inherit"}
-        bg={isActive ? bgActive : "transparent"}
-        _hover={{ bg: isActive ? bgActive : bgHover, textDecoration: 'none' }}
+        bg={isActive ? activeBg : "transparent"}
+        _hover={{ 
+          bg: isActive ? activeBg : hoverBg, 
+          textDecoration: 'none',
+          transform: 'translateX(2px)',
+          transition: 'all 0.2s ease-in-out'
+        }}
+        transition="all 0.2s ease-in-out"
       >
-        <Icon as={icon} boxSize={5} />
+        <Icon as={icon} boxSize={5} color={isActive ? accentColor : "gray.500"} />
         <Text>{children}</Text>
       </Link>
     </NextLink>
@@ -56,25 +62,47 @@ export default function DocsLayout({
   const pathname = usePathname();
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   const bgColor = useColorModeValue('white', 'gray.800');
+  const mainBgColor = useColorModeValue('brand.lightBg', 'brand.darkBg');
   
   return (
-    <Flex>
+    <Flex minH="100vh">
       {/* Sidebar */}
       <Box
-        w="280px"
+        w={{ base: '260px', lg: '280px' }}
         borderRight="1px solid"
         borderColor={borderColor}
-        py={6}
-        px={4}
-        position="fixed"
+        position="sticky"
+        top={0}
         alignSelf="flex-start"
         height="100vh"
         overflowY="auto"
         bg={bgColor}
+        boxShadow="sm"
+        zIndex={10}
+        pt={6}
+        pb={8}
       >
-        <VStack align="stretch" spacing={1}>
-          <Image src="/logo.png" alt="Logo" width={300} height={100} className='mb-6' />
-          <Heading size="md" mb={4} px={3}>Documentation</Heading>
+        <VStack align="stretch" spacing={1} px={4}>
+          <Box mb={6} textAlign="center">
+            <Image 
+              src="/logo.png" 
+              alt="Logo" 
+              width={200} 
+              height={70} 
+              style={{ margin: '0 auto' }}
+            />
+          </Box>
+          
+          <Heading 
+            size="md" 
+            mb={6} 
+            px={3} 
+            pb={2}
+            borderBottom="1px solid"
+            borderColor={borderColor}
+          >
+            Documentation
+          </Heading>
           
           <NavItem 
             href="/docs" 
@@ -84,8 +112,17 @@ export default function DocsLayout({
             Overview
           </NavItem>
           
-          <Heading size="xs" mt={6} mb={2} px={3} color="gray.500">
-            USER GUIDES
+          <Heading 
+            size="xs" 
+            mt={8} 
+            mb={2} 
+            px={3} 
+            color="gray.500"
+            letterSpacing="0.5px"
+            textTransform="uppercase"
+            fontSize="xs"
+          >
+            User Guides
           </Heading>
           
           <NavItem 
@@ -104,8 +141,17 @@ export default function DocsLayout({
             Prompt Design
           </NavItem>
           
-          <Heading size="xs" mt={6} mb={2} px={3} color="gray.500">
-            FEATURES
+          <Heading 
+            size="xs" 
+            mt={8} 
+            mb={2} 
+            px={3} 
+            color="gray.500"
+            letterSpacing="0.5px"
+            textTransform="uppercase"
+            fontSize="xs"
+          >
+            Features
           </Heading>
           
           <NavItem 
@@ -124,7 +170,7 @@ export default function DocsLayout({
             Advanced Queries
           </NavItem>
           
-          <Divider my={6} />
+          <Divider my={8} borderColor={borderColor} opacity={0.6} />
           
           <NavItem 
             href="/docs/faq" 
@@ -137,7 +183,15 @@ export default function DocsLayout({
       </Box>
       
       {/* Main content */}
-      <Box flex={1} bg={useColorModeValue('brand.lightBg', 'brand.darkBg')}>
+      <Box 
+        flex={1} 
+        bg={mainBgColor}
+        minH="100vh"
+        position="relative"
+        borderLeft="1px solid"
+        borderColor={borderColor}
+        marginLeft="-1px" // Handles double border
+      >
         {children}
       </Box>
     </Flex>
