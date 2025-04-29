@@ -77,52 +77,6 @@ export default function Documentation() {
             </TabList>
             
             <TabPanels>
-              <TabPanel>
-                <Stack spacing={6}>
-                  <Heading size="lg" color={accentColor}>Getting Started</Heading>
-                  <Text>
-                    Welcome to our documentation! Here you'll find everything you need to know
-                    about using our platform efficiently.
-                  </Text>
-                  
-                  <Box>
-                    <Heading size="md" mb={4} color={secondaryAccent}>Installation</Heading>
-                    <Box bg="gray.50" p={4} borderRadius="md" fontFamily="mono">
-                      <Text color="gray.800">npm install my-awesome-package</Text>
-                    </Box>
-                  </Box>
-                  
-                  <Box>
-                    <Heading size="md" mb={4} color={secondaryAccent}>Key Features</Heading>
-                    <List spacing={3}>
-                      <ListItem>
-                        <Box as="span" mr={2} color={accentColor}>
-                          <FaCheckCircle />
-                        </Box>
-                        Responsive design with Chakra UI
-                      </ListItem>
-                      <ListItem>
-                        <Box as="span" mr={2} color={accentColor}>
-                          <FaCheckCircle />
-                        </Box>
-                        Next.js server-side rendering
-                      </ListItem>
-                      <ListItem>
-                        <Box as="span" mr={2} color={accentColor}>
-                          <FaCheckCircle />
-                        </Box>
-                        Custom color theming
-                      </ListItem>
-                      <ListItem>
-                        <Box as="span" mr={2} color={accentColor}>
-                          <FaCheckCircle />
-                        </Box>
-                        Dark/Light mode support
-                      </ListItem>
-                    </List>
-                  </Box>
-                </Stack>
-              </TabPanel>
               
               <TabPanel>
                 <Stack spacing={6}>
