@@ -1,0 +1,75 @@
+[
+    {
+      "keybind": "Scroll wheel",
+      "description": "Zooms in and out of the graph."
+    },
+    {
+      "keybind": "Scroll wheel + H",
+      "description": "Zooms horizontally on the graph."
+    },
+    {
+      "keybind": "Scroll wheel + V",
+      "description": "Zooms vertically on the graph."
+    },
+    {
+      "keybind": "Right click and drag",
+      "description": "Zooms to the selected region on the graph."
+    },
+    {
+      "keybind": "Left click and drag",
+      "description": "Moves or pans the graph."
+    },
+    {
+      "keybind": "Left arrow",
+      "description": "Moves the view left."
+    },
+    {
+      "keybind": "Right arrow",
+      "description": "Moves the view right."
+    },
+    {
+      "keybind": "Up arrow",
+      "description": "Moves the view up (if the graph has focus)."
+    },
+    {
+      "keybind": "Down arrow",
+      "description": "Moves the view down (if the graph has focus)."
+    },
+    {
+      "keybind": "Y",
+      "description": "Goes back one year in the graph."
+    },
+    {
+      "keybind": "y",
+      "description": "Advances one year in the graph."
+    },
+    {
+      "keybind": "S",
+      "description": "Goes back one screen in the graph."
+    },
+    {
+      "keybind": "s",
+      "description": "Advances one screen in the graph."
+    },
+    {
+      "keybind": "Ctrl+Shift+Z",
+      "description": "Resets the graph zoom to the default view."
+    },
+    {
+      "keybind": "Ctrl+Shift+X",
+      "description": "Takes a screenshot of the current graph."
+    },
+    {
+      "keybind": "Ctrl+Shift+G",
+      "description": "Generates a CSV file of the currently visible data."
+    },
+    {
+      "keybind": "Ctrl+Shift+Y",
+      "description": "Copies station information to the clipboard."
+    },
+    {
+      "keybind": "Ctrl+Shift+H",
+      "description": "Opens the help documentation."
+    }
+  ]
+  

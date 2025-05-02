@@ -126,11 +126,11 @@ export default function DocsLayout({
           </Heading>
           
           <NavItem 
-            href="/docs/getting-started" 
+            href="/docs/keybinds" 
             icon={FaBook}
-            isActive={pathname === '/docs/getting-started'}
+            isActive={pathname === '/docs/keybinds'}
           >
-            Getting Started
+            Keybinds
           </NavItem>
           
           <NavItem 
@@ -138,7 +138,7 @@ export default function DocsLayout({
             icon={FaCode}
             isActive={pathname === '/docs/prompt-guide'}
           >
-            Prompt Design
+            Commands
           </NavItem>
           
           <Heading 

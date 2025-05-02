@@ -59,7 +59,6 @@ export default function Home() {
           >
             <Link href="/login" passHref>
               <Button
-                as="a"
                 rounded="full"
                 size="lg"
                 bg="brand.accent1"
@@ -71,7 +70,6 @@ export default function Home() {
             </Link>
             <Link href="/docs" passHref>
               <Button
-                as="a"
                 rounded="full"
                 size="lg"
                 colorScheme="gray"
