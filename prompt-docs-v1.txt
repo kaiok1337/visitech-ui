@@ -1,0 +1,26 @@
+- additive can keep adding more graphs, up to user to remove irrelevant data
+- big emphasis on follow up queries to fetched data
+
+shortcuts/keybinds:
+
+arrow up and down through plotted data pills
+
+(shortcuts for data points work on hover not click)
+
+e: brings up map from data point
+shift + e: when a map is pulled up
+
+shift + a: select all data
+
+v/h + scroll: graph x and y scroll
+
+
+docs notes:
+
+command list of user commands from query server
+
+call the list valid queries (nothing about structing your own
+
+ONE INSTRUCTION AT A TIME
+
+create shortcut list from keydown
