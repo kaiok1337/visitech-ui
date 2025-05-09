@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from 'react';
 import {
@@ -64,7 +64,7 @@ const renderKeybind = (keyString: string) => {
   const mouseActions = ['Scroll wheel', 'Right click', 'Left click', 'and drag'];
   
   return (
-    <Flex gap={1} align="center">
+    <Flex gap={1} align="center" flexWrap="wrap">
       {keys.map((key: string, index: number) => {
         // Handle mouse actions
         if (mouseActions.some(action => key.includes(action))) {
@@ -76,49 +76,80 @@ const renderKeybind = (keyString: string) => {
               px={2} 
               py={1} 
               borderRadius="md"
+              fontWeight="medium"
             >
               {key}
             </Badge>
           );
         }
         // Handle regular keys
-        return <Kbd key={index}>{key}</Kbd>;
+        return (
+          <Kbd 
+            key={index} 
+            px={2} 
+            py={1} 
+            fontWeight="semibold" 
+            bgColor="gray.100" 
+            boxShadow="md"
+            borderRadius="md"
+            _dark={{ bgColor: "gray.600" }}
+          >
+            {key}
+          </Kbd>
+        );
       })}
     </Flex>
   );
 };
 
-const KeybindItem = ({ item, onHover }: { item: any, onHover: () => void }) => {
+const KeybindItem = ({ item, onHover, isActive }: { item: any, onHover: () => void, isActive: boolean }) => {
   return (
     <Flex 
       justify="space-between" 
       align="center" 
-      py={2}
-      px={1}
-      _hover={{ bg: "gray.50", borderRadius: "md" }}
+      py={3}
+      px={3}
+      bg={isActive ? useColorModeValue("blue.50", "blue.900") : "transparent"}
+      _hover={{ bg: useColorModeValue("gray.50", "gray.700"), borderRadius: "md" }}
       onMouseEnter={onHover}
+      borderRadius="md"
+      transition="all 0.2s ease"
     >
-      <Box w="120px">
+      <Box minW="130px" w="40%">
         {renderKeybind(item.keybind)}
       </Box>
-      <Text flex="1" ml={4}>{item.description}</Text>
+      <Text flex="1" ml={4} fontSize="sm">{item.description}</Text>
     </Flex>
   );
 };
 
 export default function KeybindsMenu() {
   const [activeGif, setActiveGif] = useState<string | null>(null);
+  const [hoveredKeybind, setHoveredKeybind] = useState<string | null>(null);
   const buttonBg = useColorModeValue('gray.200', 'gray.700');
   const popoverBg = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
   
-  // Simulating GIF selection based on keybind
+  // Get the actual image/gif for the keybind
   const getGifForKeybind = (keybind: string) => {
-    // This would be replaced with actual mappings to GIFs
-    return `/gifs/keybind-demo-placeholder.gif`;
+    const keybindItem = keybinds.find(kb => kb.keybind === keybind);
+    // Make sure paths start with a slash if they don't already
+    let picturePath = keybindItem?.picture || null;
+    if (picturePath && !picturePath.startsWith('/')) {
+      picturePath = '/' + picturePath;
+    }
+    return picturePath;
+  };
+
+  // Add debug info to check path construction
+  const logImageLoad = (src: string, success: boolean) => {
+    if (!success) {
+      console.log(`Failed to load image: ${src}`);
+    }
   };
 
   const handleHover = (keybind: string) => {
+    setHoveredKeybind(keybind);
     setActiveGif(getGifForKeybind(keybind));
   };
 
@@ -130,28 +161,35 @@ export default function KeybindsMenu() {
           bg={buttonBg}
           _hover={{ bg: useColorModeValue('gray.300', 'gray.600') }}
           size="md"
+          fontWeight="normal"
+          transition="all 0.2s"
+          _active={{ transform: "scale(0.98)" }}
         >
           Shortcuts
         </Button>
       </PopoverTrigger>
       <Portal>
         <PopoverContent 
-          width="700px" 
-          maxWidth="90vw" 
+          width="900px" 
+          maxWidth="95vw" 
           bg={popoverBg}
           border="1px solid"
           borderColor={borderColor}
-          boxShadow="xl"
+          boxShadow="2xl"
+          overflow="hidden"
         >
           <PopoverArrow />
           <PopoverCloseButton />
-          <PopoverHeader fontWeight="bold" borderBottomWidth="1px">
-            Keyboard Shortcuts & Mouse Controls
+          <PopoverHeader fontWeight="bold" borderBottomWidth="1px" py={3}>
+            <Flex align="center">
+              <Icon as={FiKey} mr={2} />
+              <Text>Keyboard Shortcuts & Mouse Controls</Text>
+            </Flex>
           </PopoverHeader>
           <PopoverBody p={0}>
             <Flex>
               {/* Left side: Categories and shortcuts */}
-              <Box w="60%" p={4}>
+              <Box w="50%" p={4} borderRight="1px solid" borderColor={borderColor}>
                 <Tabs variant="soft-rounded" colorScheme="blue" isLazy>
                   <TabList mb={4}>
                     <Tab><Icon as={FiNavigation} mr={2} /> Navigation</Tab>
@@ -160,76 +198,148 @@ export default function KeybindsMenu() {
                   </TabList>
                   <TabPanels>
                     <TabPanel p={0}>
-                      <Divider mb={2} />
-                      {groupedKeybinds.navigation.map((item, index) => (
-                        <React.Fragment key={index}>
+                      <Box 
+                        maxH="400px" 
+                        overflowY="auto" 
+                        pr={2} 
+                        css={{
+                          '&::-webkit-scrollbar': {
+                            width: '4px',
+                          },
+                          '&::-webkit-scrollbar-track': {
+                            width: '6px',
+                            background: useColorModeValue('gray.100', 'gray.800'),
+                          },
+                          '&::-webkit-scrollbar-thumb': {
+                            background: useColorModeValue('gray.300', 'gray.600'),
+                            borderRadius: '24px',
+                          },
+                        }}
+                      >
+                        {groupedKeybinds.navigation.map((item, index) => (
                           <KeybindItem 
+                            key={index} 
                             item={item} 
-                            onHover={() => handleHover(item.keybind)} 
+                            onHover={() => handleHover(item.keybind)}
+                            isActive={hoveredKeybind === item.keybind}
                           />
-                          {index < groupedKeybinds.navigation.length - 1 && <Divider my={1} />}
-                        </React.Fragment>
-                      ))}
+                        ))}
+                      </Box>
                     </TabPanel>
                     <TabPanel p={0}>
-                      <Divider mb={2} />
-                      {groupedKeybinds.zoom.map((item, index) => (
-                        <React.Fragment key={index}>
+                      <Box maxH="400px" overflowY="auto" pr={2}
+                        css={{
+                          '&::-webkit-scrollbar': {
+                            width: '4px',
+                          },
+                          '&::-webkit-scrollbar-track': {
+                            width: '6px',
+                            background: useColorModeValue('gray.100', 'gray.800'),
+                          },
+                          '&::-webkit-scrollbar-thumb': {
+                            background: useColorModeValue('gray.300', 'gray.600'),
+                            borderRadius: '24px',
+                          },
+                        }}
+                      >
+                        {groupedKeybinds.zoom.map((item, index) => (
                           <KeybindItem 
+                            key={index} 
                             item={item} 
-                            onHover={() => handleHover(item.keybind)} 
+                            onHover={() => handleHover(item.keybind)}
+                            isActive={hoveredKeybind === item.keybind}
                           />
-                          {index < groupedKeybinds.zoom.length - 1 && <Divider my={1} />}
-                        </React.Fragment>
-                      ))}
+                        ))}
+                      </Box>
                     </TabPanel>
                     <TabPanel p={0}>
-                      <Divider mb={2} />
-                      {groupedKeybinds.tools.map((item, index) => (
-                        <React.Fragment key={index}>
+                      <Box maxH="400px" overflowY="auto" pr={2}
+                        css={{
+                          '&::-webkit-scrollbar': {
+                            width: '4px',
+                          },
+                          '&::-webkit-scrollbar-track': {
+                            width: '6px',
+                            background: useColorModeValue('gray.100', 'gray.800'),
+                          },
+                          '&::-webkit-scrollbar-thumb': {
+                            background: useColorModeValue('gray.300', 'gray.600'),
+                            borderRadius: '24px',
+                          },
+                        }}
+                      >
+                        {groupedKeybinds.tools.map((item, index) => (
                           <KeybindItem 
+                            key={index} 
                             item={item} 
-                            onHover={() => handleHover(item.keybind)} 
+                            onHover={() => handleHover(item.keybind)}
+                            isActive={hoveredKeybind === item.keybind}
                           />
-                          {index < groupedKeybinds.tools.length - 1 && <Divider my={1} />}
-                        </React.Fragment>
-                      ))}
+                        ))}
+                      </Box>
                     </TabPanel>
                   </TabPanels>
                 </Tabs>
               </Box>
               
               {/* Right side: GIF demonstration */}
-              <Box w="40%" borderLeft="1px solid" borderColor={borderColor} p={4}>
-                <Heading size="sm" mb={3}>Demonstration</Heading>
+              <Box w="50%" p={5} bg={useColorModeValue("gray.50", "gray.800")}>
+                <Heading size="sm" mb={3} fontWeight="medium">
+                  <Flex align="center">
+                    <Icon as={hoveredKeybind?.includes("Screenshot") ? FiCamera : FiMove} mr={2} />
+                    Demonstration
+                  </Flex>
+                </Heading>
                 <Box 
-                  height="200px" 
-                  bg="gray.100" 
+                  height="400px" 
+                  bg={useColorModeValue("white", "gray.700")}
                   borderRadius="md" 
                   display="flex" 
+                  flexDirection="column"
                   justifyContent="center" 
                   alignItems="center"
                   overflow="hidden"
+                  boxShadow="sm"
+                  borderWidth="1px"
+                  borderColor={borderColor}
                 >
                   {activeGif ? (
-                    <Image 
-                      src={activeGif} 
-                      alt="Keybind demonstration" 
-                      objectFit="cover" 
-                      width="100%"
-                      fallback={
-                        <Text color="gray.500" fontSize="sm">
-                          Hover over a shortcut to see a demonstration
-                        </Text>
-                      }
-                    />
+                    <>
+                      <Image 
+                        src={activeGif} 
+                        alt={`Demonstration for ${hoveredKeybind}`} 
+                        objectFit="contain" 
+                        height="90%"
+                        width="100%"
+                        onLoad={() => logImageLoad(activeGif!, true)}
+                        onError={() => logImageLoad(activeGif!, false)}
+                        fallback={
+                          <Text color="gray.500" fontSize="sm">
+                            No demonstration available for this shortcut
+                          </Text>
+                        }
+                      />
+                      <Text fontSize="xs" color="gray.600" mt={2} px={3} py={1}>
+                        {hoveredKeybind} 
+                      </Text>
+                    </>
                   ) : (
-                    <Text color="gray.500" fontSize="sm">
-                      Hover over a shortcut to see a demonstration
-                    </Text>
+                    <Flex
+                      direction="column"
+                      align="center"
+                      justify="center"
+                      height="100%"
+                      gap={3}
+                      p={4}
+                    >
+                      <Icon as={FiMousePointer} fontSize="4xl" color="gray.400" />
+                      <Text color="gray.500" fontSize="sm" textAlign="center">
+                        Hover over a shortcut to see a demonstration
+                      </Text>
+                    </Flex>
                   )}
                 </Box>
-                <Text fontSize="xs" mt={2} color="gray.500" textAlign="center">
+                <Text fontSize="xs" mt={3} color="gray.500" textAlign="center">
                   This visual guide shows how to use the selected shortcut
                 </Text>
               </Box>

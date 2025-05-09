@@ -1,15 +1,18 @@
 [
     {
       "keybind": "Scroll wheel",
-      "description": "Zooms in and out of the graph."
+      "description": "Zooms in and out of the graph.",
+      "picture": "/scroll-zoom.gif"
     },
     {
       "keybind": "Scroll wheel + H",
-      "description": "Zooms horizontally on the graph."
+      "description": "Zooms horizontally on the graph.",
+      "picture": "/h-scroll.gif"
     },
     {
       "keybind": "Scroll wheel + V",
-      "description": "Zooms vertically on the graph."
+      "description": "Zooms vertically on the graph.",
+      "picture": "/v-scroll.gif"
     },
     {
       "keybind": "Right click and drag",
@@ -21,27 +24,33 @@
     },
     {
       "keybind": "Left arrow",
-      "description": "Moves the view left."
+      "description": "Moves the view left.",
+      "picture": "/left-arrow.gif"
     },
     {
       "keybind": "Right arrow",
-      "description": "Moves the view right."
+      "description": "Moves the view right.",
+      "picture": "/right-arrow.gif"
     },
     {
       "keybind": "Up arrow",
-      "description": "Moves the view up (if the graph has focus)."
+      "description": "Moves the view up (if the graph has focus).",
+      "picture": "/up-arrow.gif"
     },
     {
       "keybind": "Down arrow",
-      "description": "Moves the view down (if the graph has focus)."
+      "description": "Moves the view down (if the graph has focus).",
+      "picture": "/down-arrow.gif"
     },
     {
       "keybind": "Y",
-      "description": "Goes back one year in the graph."
+      "description": "Goes back one year in the graph.",
+      "picture": "/shift+y.gif"
     },
     {
       "keybind": "y",
-      "description": "Advances one year in the graph."
+      "description": "Advances one year in the graph.",
+      "picture": "/y.gif"
     },
     {
       "keybind": "S",

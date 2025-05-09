@@ -17,11 +17,12 @@ import {
   useDisclosure,
   Badge,
 } from '@chakra-ui/react';
-import { picture } from 'framer-motion/client';
 import { useState } from 'react';
 
+const DEBUG_IMAGES = true; // Set to false when not debugging
+
 // Command component that shows description and GIF on hover
-const CommandItem = ({ command, description, picture }: { command: string; description: string; picture: string }) => {
+const CommandItem = ({ command, description, picture }: { command: string; description: string; picture?: string }) => {
   const [isHovered, setIsHovered] = useState(false);
   const placeholderBg = useColorModeValue('gray.100', 'gray.700');
   const [boxRef, setBoxRef] = useState<HTMLDivElement | null>(null);
@@ -49,6 +50,12 @@ const CommandItem = ({ command, description, picture }: { command: string; descr
         : { right: `${viewportWidth - rect.left + 10}px` })
     };
   };
+
+  // Ensure image path starts with a slash to reference from the public directory
+  const getImagePath = (path?: string) => {
+    if (!path) return null;
+    return path.startsWith('/') ? path : `/${path}`;
+  };
   
   return (
     <Box 
@@ -72,7 +79,7 @@ const CommandItem = ({ command, description, picture }: { command: string; descr
       </HStack>
       
       {/* GIF placeholder anchored to command but positioned to stay visible */}
-      {isHovered && (
+      {isHovered && picture && (
         <Box 
           position="fixed" 
           zIndex="2000" 
@@ -85,8 +92,14 @@ const CommandItem = ({ command, description, picture }: { command: string; descr
           {...getGifPosition()}
         >
           <Center bg={placeholderBg} p={4} borderRadius="md" h="300px" w="650px">
-            <img src={picture} alt="GIF placeholder" />
+            <img src={getImagePath(picture)} alt={`Demonstration of: ${command}`} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
           </Center>
+        </Box>
+      )}
+
+      {isHovered && picture && DEBUG_IMAGES && (
+        <Box position="absolute" bottom="-20px" left="0" fontSize="xs" color="red.500" zIndex="2100">
+          Image path: {getImagePath(picture)}
         </Box>
       )}
     </Box>
@@ -94,7 +107,7 @@ const CommandItem = ({ command, description, picture }: { command: string; descr
 };
 
 // Category component to group related commands
-const CommandCategory = ({ title, commands }: { title: string; commands: {command: string; description: string; picture: string}[]; }) => {
+const CommandCategory = ({ title, commands }: { title: string; commands: {command: string; description: string; picture?: string}[]; }) => {
   const bgColor = useColorModeValue('gray.50', 'gray.700');
   
   return (
