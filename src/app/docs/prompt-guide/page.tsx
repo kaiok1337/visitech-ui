@@ -17,10 +17,11 @@ import {
   useDisclosure,
   Badge,
 } from '@chakra-ui/react';
+import { picture } from 'framer-motion/client';
 import { useState } from 'react';
 
 // Command component that shows description and GIF on hover
-const CommandItem = ({ command, description }: { command: string; description: string }) => {
+const CommandItem = ({ command, description, picture }: { command: string; description: string; picture: string }) => {
   const [isHovered, setIsHovered] = useState(false);
   const placeholderBg = useColorModeValue('gray.100', 'gray.700');
   const [boxRef, setBoxRef] = useState<HTMLDivElement | null>(null);
@@ -83,8 +84,8 @@ const CommandItem = ({ command, description }: { command: string; description: s
           borderColor="gray.200"
           {...getGifPosition()}
         >
-          <Center bg={placeholderBg} p={4} borderRadius="md" h="300px" w="450px">
-            <Text fontSize="md" color="gray.500">GIF placeholder</Text>
+          <Center bg={placeholderBg} p={4} borderRadius="md" h="300px" w="650px">
+            <img src={picture} alt="GIF placeholder" />
           </Center>
         </Box>
       )}
@@ -93,7 +94,7 @@ const CommandItem = ({ command, description }: { command: string; description: s
 };
 
 // Category component to group related commands
-const CommandCategory = ({ title, commands }: { title: string; commands: {command: string; description: string}[] }) => {
+const CommandCategory = ({ title, commands }: { title: string; commands: {command: string; description: string; picture: string}[]; }) => {
   const bgColor = useColorModeValue('gray.50', 'gray.700');
   
   return (
@@ -114,6 +115,7 @@ const CommandCategory = ({ title, commands }: { title: string; commands: {comman
             key={idx} 
             command={cmd.command} 
             description={cmd.description} 
+            picture={cmd.picture}
           />
         ))}
       </VStack>
@@ -132,43 +134,53 @@ export default function PromptGuide() {
       commands: [
         {
           command: "What is the longest stretch of days over 90F in [location]?",
-          description: "Finds the longest consecutive period where the daily maximum temperature exceeded 90°F in the specified location."
+          description: "Finds the longest consecutive period where the daily maximum temperature exceeded 90°F in the specified location.",
+          picture: "/strech-above-90.png",
         },
         {
           command: "What is the longest stretch of days below 30F in [location]?",
-          description: "Finds the longest consecutive period where the daily maximum temperature was below 30°F in the specified location."
+          description: "Finds the longest consecutive period where the daily maximum temperature was below 30°F in the specified location.",
+          picture: "/strech-below-30.png",
         },
         {
           command: "What is the most days over 95F in [location] during a single year?",
-          description: "Finds the year with the highest count of days above 95°F in the specified location."
+          description: "Finds the year with the highest count of days above 95°F in the specified location.",
+          picture: "/strech-above-95.png",
         },
         {
           command: "What is the most days below 20F in [location] during a single year?",
-          description: "Finds the year with the highest count of days below 20°F in the specified location."
+          description: "Finds the year with the highest count of days below 20°F in the specified location.",
+          picture: "/days-below-20.png",
         },
         {
           command: "Show all [location] daily maximum temperatures.",
-          description: "Displays all recorded daily maximum temperatures for the specified location."
+          description: "Displays all recorded daily maximum temperatures for the specified location.",
+          picture: "/daily-maximum.png",
         },
         {
           command: "Show all [location] daily minimum temperatures.",
-          description: "Displays all recorded daily minimum temperatures for the specified location."
+          description: "Displays all recorded daily minimum temperatures for the specified location.",
+          picture: "/daily-minimum.png",
         },
         {
           command: "List all days above 90 degrees in [location].",
-          description: "Lists all dates where the daily maximum temperature exceeded 90°F in the specified location."
+          description: "Lists all dates where the daily maximum temperature exceeded 90°F in the specified location.",
+          picture: "/strech-above-90.png",
         },
         {
           command: "List all days below 32 degrees in [location].",
-          description: "Lists all dates where the daily maximum temperature was below 32°F in the specified location."
+          description: "Lists all dates where the daily maximum temperature was below 32°F in the specified location.",
+          picture: "/strech-below-30.png",
         },
         {
           command: "List all days below minus four in [location].",
-          description: "Lists all dates where the daily maximum temperature was below -4°F in the specified location."
+          description: "Lists all dates where the daily maximum temperature was below -4°F in the specified location.",
+          picture: "/days-below-4.png",
         },
         {
           command: "Show all [location] temperatures.",
-          description: "Displays all available daily temperature data for the specified location."
+          description: "Displays all available daily temperature data for the specified location.",
+          picture: "/show-most-temps.png",
         }
       ]
     },
@@ -177,59 +189,73 @@ export default function PromptGuide() {
       commands: [
         {
           command: "Show [location] drought.",
-          description: "Displays drought index data (PDSI) for the specified location."
+          description: "Displays drought index data (PDSI) for the specified location.",
+          picture: "/drought.png",
         },
         {
           command: "Show drought.",
-          description: "Displays drought index data (PDSI) for the United States."
+          description: "Displays drought index data (PDSI) for the United States.",
+          picture: "/drought.png",
         },
         {
           command: "Show Arctic sea ice.",
-          description: "Displays Arctic sea ice extent or area data."
+          description: "Displays Arctic sea ice extent or area data.",
+          picture: "/arctic-sea-ice.png",
         },
         {
           command: "Show Arctic sea ice OSI.",
-          description: "Displays Arctic sea ice data from the OSI (Ocean and Sea Ice) dataset."
+          description: "Displays Arctic sea ice data from the OSI (Ocean and Sea Ice) dataset.",
+          picture: "/arctic-sea-ice.png",
         },
         {
           command: "Show Arctic sea ice area.",
-          description: "Displays the area of Arctic sea ice."
+          description: "Displays the area of Arctic sea ice.",
+          picture: "/arctic-sea-ice.png",
         },
         {
           command: "Show Arctic sea ice NSIDC.",
-          description: "Displays Arctic sea ice data from the NSIDC (National Snow and Ice Data Center) dataset."
+          description: "Displays Arctic sea ice data from the NSIDC (National Snow and Ice Data Center) dataset.",
+          picture: "/arctic-sea-ice.png",
         },
         {
           command: "Show Antarctic sea ice.",
-          description: "Displays Antarctic sea ice extent or area data."
+          description: "Displays Antarctic sea ice extent or area data.",
+          picture: "/arctic-sea-ice.png",
         },
         {
           command: "Show CO2.",
-          description: "Displays atmospheric carbon dioxide (CO2) data."
+          description: "Displays atmospheric carbon dioxide (CO2) data.",
+          picture: "/co2.png",
         },
         {
           command: "Show Briffa's reconstruction.",
-          description: "Displays Briffa's Northern Hemisphere climate reconstruction data."
+          description: "Displays Briffa's Northern Hemisphere climate reconstruction data.",
+          picture: "/briffa.png",
         },
         {
           command: "Show hurricanes.",
-          description: "Displays hurricane data."
+          description: "Displays hurricane data.",
+          picture: "/hurricane.jpg",
         },
         {
           command: "Show forest fires.",
-          description: "Displays data on forest fires."
+          description: "Displays data on forest fires.",
+          picture: "/forest-fires.png",
         },
         {
           command: "Show ENSO.",
-          description: "Displays El Niño–Southern Oscillation (ENSO) data."
+          description: "Displays El Niño–Southern Oscillation (ENSO) data.",
+          picture: "/enso.png",
         },
         {
           command: "Show La Nina.",
-          description: "Displays La Niña event data."
+          description: "Displays La Niña event data.",
+          picture: "/enso.png",
         },
         {
           command: "Show El Nino.",
-          description: "Displays El Niño event data."
+          description: "Displays El Niño event data.",
+          picture: "/enso.png",
         }
       ]
     },
@@ -238,23 +264,28 @@ export default function PromptGuide() {
       commands: [
         {
           command: "Show Intel stock price.",
-          description: "Displays the current or historical stock price for Intel (INTC)."
+          description: "Displays the current or historical stock price for Intel (INTC).",
+          picture: "/intel-price.png",
         },
         {
           command: "Show Nvidia stocks.",
-          description: "Displays the current or historical stock price for Nvidia (NVDA)."
+          description: "Displays the current or historical stock price for Nvidia (NVDA).",
+          picture: "/nvda-price.png",
         },
         {
           command: "Show sunspots.",
-          description: "Displays historical sunspot count data."
+          description: "Displays historical sunspot count data.",
+          picture: "/briffa.png",
         },
         {
           command: "Show US population.",
-          description: "Displays US population data."
+          description: "Displays US population data.",
+          picture: "/us-population.png",
         },
         {
           command: "Show map.",
-          description: "Displays a map relevant to the current data or context."
+          description: "Displays a map relevant to the current data or context.",
+          picture: "/map.png",
         },
         {
           command: "Compare maps.",

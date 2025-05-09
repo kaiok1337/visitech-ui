@@ -9,12 +9,14 @@ import {
   Link,
   Divider,
   Icon,
+  HStack,
   useColorModeValue,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { FaBook, FaCode, FaChartLine, FaQuestion, FaHome } from 'react-icons/fa';
+import KeybindsMenu from '../components/KeybindsMenu';
 
 interface NavItemProps {
   href: string;
@@ -64,135 +66,150 @@ export default function DocsLayout({
   const mainBgColor = useColorModeValue('brand.lightBg', 'brand.darkBg');
   
   return (
-    <Flex minH="100vh">
-      {/* Sidebar */}
-      <Box
-        w={{ base: '260px', lg: '280px' }}
-        borderRight="1px solid"
+    <Flex minH="100vh" direction="column">
+      {/* Top Navigation Bar with Keybinds Menu */}
+      <Flex 
+        width="100%" 
+        height="60px" 
+        bg={bgColor} 
+        borderBottom="1px solid" 
         borderColor={borderColor}
+        px={4}
+        alignItems="center"
+        justifyContent="space-between"
         position="sticky"
         top={0}
-        alignSelf="flex-start"
-        height="100vh"
-        overflowY="auto"
-        bg={bgColor}
-        boxShadow="sm"
-        zIndex={10}
-        pt={6}
-        pb={8}
+        zIndex={20}
       >
-        <VStack align="stretch" spacing={1} px={4}>
-          <Box mb={6} textAlign="center">
+        <HStack spacing={4}>
+          <Link as={NextLink} href="/" passHref>
             <Image 
               src="/logo.png" 
               alt="Logo" 
-              width={200} 
-              height={70} 
-              style={{ margin: '0 auto' }}
+              width={120} 
+              height={40} 
             />
-          </Box>
-          
-          <Heading 
-            size="md" 
-            mb={6} 
-            px={3} 
-            pb={2}
-            borderBottom="1px solid"
-            borderColor={borderColor}
-          >
-            Documentation
-          </Heading>
-          
-          <NavItem 
-            href="/docs" 
-            icon={FaHome} 
-            isActive={pathname === '/docs'}
-          >
-            Overview
-          </NavItem>
-          
-          <Heading 
-            size="xs" 
-            mt={8} 
-            mb={2} 
-            px={3} 
-            color="gray.500"
-            letterSpacing="0.5px"
-            textTransform="uppercase"
-            fontSize="xs"
-          >
-            User Guides
-          </Heading>
-          
-          <NavItem 
-            href="/docs/keybinds" 
-            icon={FaBook}
-            isActive={pathname === '/docs/keybinds'}
-          >
-            Keybinds
-          </NavItem>
-          
-          <NavItem 
-            href="/docs/prompt-guide" 
-            icon={FaCode}
-            isActive={pathname === '/docs/prompt-guide'}
-          >
-            Commands
-          </NavItem>
-          
-          <Heading 
-            size="xs" 
-            mt={8} 
-            mb={2} 
-            px={3} 
-            color="gray.500"
-            letterSpacing="0.5px"
-            textTransform="uppercase"
-            fontSize="xs"
-          >
-            Features
-          </Heading>
-          
-          <NavItem 
-            href="/docs/data-visualization" 
-            icon={FaChartLine}
-            isActive={pathname === '/docs/data-visualization'}
-          >
-            Data Visualization
-          </NavItem>
-          
-          <NavItem 
-            href="/docs/advanced-queries" 
-            icon={FaCode}
-            isActive={pathname === '/docs/advanced-queries'}
-          >
-            Advanced Queries
-          </NavItem>
-          
-          <Divider my={8} borderColor={borderColor} opacity={0.6} />
-          
-          <NavItem 
-            href="/docs/faq" 
-            icon={FaQuestion}
-            isActive={pathname === '/docs/faq'}
-          >
-            FAQ & Troubleshooting
-          </NavItem>
-        </VStack>
-      </Box>
+          </Link>
+        </HStack>
+        
+        <HStack spacing={4}>
+          <KeybindsMenu />
+          {/* Add other top navbar items here if needed */}
+        </HStack>
+      </Flex>
       
-      {/* Main content */}
-      <Box 
-        flex={1} 
-        bg={mainBgColor}
-        minH="100vh"
-        position="relative"
-        borderLeft="1px solid"
-        borderColor={borderColor}
-        marginLeft="-1px" // Handles double border
-      >
-        {children}
-      </Box>
+      <Flex flex={1}>
+        {/* Sidebar */}
+        <Box
+          w={{ base: '260px', lg: '280px' }}
+          borderRight="1px solid"
+          borderColor={borderColor}
+          position="sticky"
+          top="60px" // Adjusted to account for the top navbar
+          alignSelf="flex-start"
+          height="calc(100vh - 60px)" // Subtract the navbar height
+          overflowY="auto"
+          bg={bgColor}
+          boxShadow="sm"
+          zIndex={10}
+          pt={6}
+          pb={8}
+        >
+          <VStack align="stretch" spacing={1} px={4}>
+            <Heading 
+              size="md" 
+              mb={6} 
+              px={3} 
+              pb={2}
+              borderBottom="1px solid"
+              borderColor={borderColor}
+            >
+              Documentation
+            </Heading>
+            
+            <NavItem 
+              href="/docs" 
+              icon={FaHome} 
+              isActive={pathname === '/docs'}
+            >
+              Overview
+            </NavItem>
+            
+            <Heading 
+              size="xs" 
+              mt={8} 
+              mb={2} 
+              px={3} 
+              color="gray.500"
+              letterSpacing="0.5px"
+              textTransform="uppercase"
+              fontSize="xs"
+            >
+              User Guides
+            </Heading>
+            
+            <NavItem 
+              href="/docs/prompt-guide" 
+              icon={FaCode}
+              isActive={pathname === '/docs/prompt-guide'}
+            >
+              Commands
+            </NavItem>
+            
+            <Heading 
+              size="xs" 
+              mt={8} 
+              mb={2} 
+              px={3} 
+              color="gray.500"
+              letterSpacing="0.5px"
+              textTransform="uppercase"
+              fontSize="xs"
+            >
+              Features
+            </Heading>
+            
+            <NavItem 
+              href="/docs/data-visualization" 
+              icon={FaChartLine}
+              isActive={pathname === '/docs/data-visualization'}
+            >
+              Data Visualization
+            </NavItem>
+            
+            <NavItem 
+              href="/docs/advanced-queries" 
+              icon={FaCode}
+              isActive={pathname === '/docs/advanced-queries'}
+            >
+              Advanced Queries
+            </NavItem>
+            
+            <Divider my={8} borderColor={borderColor} opacity={0.6} />
+            
+            <NavItem 
+              href="/docs/faq" 
+              icon={FaQuestion}
+              isActive={pathname === '/docs/faq'}
+            >
+              FAQ & Troubleshooting
+            </NavItem>
+          </VStack>
+        </Box>
+        
+        {/* Main content */}
+        <Box 
+          flex={1} 
+          bg={mainBgColor}
+          minH="calc(100vh - 60px)" // Adjusted for navbar
+          position="relative"
+          borderLeft="1px solid"
+          borderColor={borderColor}
+          marginLeft="-1px" // Handles double border
+        >
+          {children}
+        </Box>
+      </Flex>
     </Flex>
   );
 }

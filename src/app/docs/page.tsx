@@ -36,28 +36,26 @@ export default function Documentation() {
         <Flex mb={8} justifyContent="space-between" alignItems="center">
           <Heading color={accentColor}>Documentation</Heading>
           <Stack direction="row" spacing={4}>
-            <NextLink href="/" passHref>
-              <Button 
-                as="a"
-                leftIcon={<FaHome />}
-                variant="outline"
-                borderColor={accentColor}
-                color={accentColor}
-              >
-                Home
-              </Button>
-            </NextLink>
-            <NextLink href="/login" passHref>
-              <Button 
-                as="a"
-                variant="solid"
-                bg={accentColor}
-                color="white"
-                _hover={{ bg: 'blue.500' }}
-              >
-                Login
-              </Button>
-            </NextLink>
+            <Button 
+              as={NextLink}
+              href="/"
+              leftIcon={<FaHome />}
+              variant="outline"
+              borderColor={accentColor}
+              color={accentColor}
+            >
+              Home
+            </Button>
+            <Button 
+              as={NextLink}
+              href="/login"
+              variant="solid"
+              bg={accentColor}
+              color="white"
+              _hover={{ bg: 'blue.500' }}
+            >
+              Login
+            </Button>
             <Button 
               onClick={toggleColorMode} 
               variant="ghost"
