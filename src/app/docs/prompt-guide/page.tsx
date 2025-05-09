@@ -10,20 +10,455 @@ import {
   Divider,
   Code,
   useColorModeValue,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Image,
   Center,
+  VStack,
+  HStack,
+  Collapse,
+  useDisclosure,
+  Badge,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+
+// Command component that shows description and GIF on hover
+const CommandItem = ({ command, description }: { command: string; description: string }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const placeholderBg = useColorModeValue('gray.100', 'gray.700');
+  const [boxRef, setBoxRef] = useState<HTMLDivElement | null>(null);
+  
+  // Calculate position to keep GIF anchored to command but visible
+  const getGifPosition = () => {
+    if (!boxRef) return { top: 0, right: 0 };
+    
+    const rect = boxRef.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+    
+    // Horizontal positioning - prefer right side but switch to left if needed
+    const rightSpace = viewportWidth - rect.right;
+    const useRightSide = rightSpace > 500; // GIF width + padding
+    
+    // Vertical positioning - center with command but ensure it stays in viewport
+    let top = rect.top + (rect.height / 2) - 150; // 150 is half the GIF height
+    top = Math.max(20, Math.min(viewportHeight - 320, top)); // Keep in viewport
+    
+    return {
+      top: `${top}px`,
+      ...(useRightSide 
+        ? { left: `${rect.right + 10}px` } 
+        : { right: `${viewportWidth - rect.left + 10}px` })
+    };
+  };
+  
+  return (
+    <Box 
+      ref={setBoxRef}
+      borderBottom="1px" 
+      borderColor="gray.200" 
+      py={2}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      position="relative"
+      transition="all 0.2s"
+      _hover={{ bg: 'gray.50' }}
+    >
+      <HStack align="start" spacing={4}>
+        <Code p={2} borderRadius="md" fontSize="sm" minW="250px" fontWeight="medium">
+          {command}
+        </Code>
+        <Text fontSize="sm" flex="1">
+          {description}
+        </Text>
+      </HStack>
+      
+      {/* GIF placeholder anchored to command but positioned to stay visible */}
+      {isHovered && (
+        <Box 
+          position="fixed" 
+          zIndex="2000" 
+          p={3} 
+          shadow="xl" 
+          bg="white" 
+          borderRadius="md"
+          borderWidth="2px"
+          borderColor="gray.200"
+          {...getGifPosition()}
+        >
+          <Center bg={placeholderBg} p={4} borderRadius="md" h="300px" w="450px">
+            <Text fontSize="md" color="gray.500">GIF placeholder</Text>
+          </Center>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+// Category component to group related commands
+const CommandCategory = ({ title, commands }: { title: string; commands: {command: string; description: string}[] }) => {
+  const bgColor = useColorModeValue('gray.50', 'gray.700');
+  
+  return (
+    <Box mb={6}>
+      <Box py={2} px={4} bg={bgColor} borderRadius="md" mb={2}>
+        <Heading size="md">{title}</Heading>
+      </Box>
+      <VStack 
+        spacing={0} 
+        align="stretch" 
+        divider={<Divider />} 
+        borderWidth="1px"
+        borderRadius="md"
+        overflow="hidden"
+      >
+        {commands.map((cmd, idx) => (
+          <CommandItem 
+            key={idx} 
+            command={cmd.command} 
+            description={cmd.description} 
+          />
+        ))}
+      </VStack>
+    </Box>
+  );
+};
 
 export default function PromptGuide() {
   const accentColor = useColorModeValue('brand.accent1', 'brand.accent1');
   const secondaryAccent = useColorModeValue('brand.accent2', 'brand.accent2');
-  const placeholderBg = useColorModeValue('gray.100', 'gray.700');
+  
+  // Command data organized by categories
+  const commandCategories = [
+    {
+      title: "Weather & Temperature Commands",
+      commands: [
+        {
+          command: "What is the longest stretch of days over 90F in [location]?",
+          description: "Finds the longest consecutive period where the daily maximum temperature exceeded 90°F in the specified location."
+        },
+        {
+          command: "What is the longest stretch of days below 30F in [location]?",
+          description: "Finds the longest consecutive period where the daily maximum temperature was below 30°F in the specified location."
+        },
+        {
+          command: "What is the most days over 95F in [location] during a single year?",
+          description: "Finds the year with the highest count of days above 95°F in the specified location."
+        },
+        {
+          command: "What is the most days below 20F in [location] during a single year?",
+          description: "Finds the year with the highest count of days below 20°F in the specified location."
+        },
+        {
+          command: "Show all [location] daily maximum temperatures.",
+          description: "Displays all recorded daily maximum temperatures for the specified location."
+        },
+        {
+          command: "Show all [location] daily minimum temperatures.",
+          description: "Displays all recorded daily minimum temperatures for the specified location."
+        },
+        {
+          command: "List all days above 90 degrees in [location].",
+          description: "Lists all dates where the daily maximum temperature exceeded 90°F in the specified location."
+        },
+        {
+          command: "List all days below 32 degrees in [location].",
+          description: "Lists all dates where the daily maximum temperature was below 32°F in the specified location."
+        },
+        {
+          command: "List all days below minus four in [location].",
+          description: "Lists all dates where the daily maximum temperature was below -4°F in the specified location."
+        },
+        {
+          command: "Show all [location] temperatures.",
+          description: "Displays all available daily temperature data for the specified location."
+        }
+      ]
+    },
+    {
+      title: "Climate & Environmental Data",
+      commands: [
+        {
+          command: "Show [location] drought.",
+          description: "Displays drought index data (PDSI) for the specified location."
+        },
+        {
+          command: "Show drought.",
+          description: "Displays drought index data (PDSI) for the United States."
+        },
+        {
+          command: "Show Arctic sea ice.",
+          description: "Displays Arctic sea ice extent or area data."
+        },
+        {
+          command: "Show Arctic sea ice OSI.",
+          description: "Displays Arctic sea ice data from the OSI (Ocean and Sea Ice) dataset."
+        },
+        {
+          command: "Show Arctic sea ice area.",
+          description: "Displays the area of Arctic sea ice."
+        },
+        {
+          command: "Show Arctic sea ice NSIDC.",
+          description: "Displays Arctic sea ice data from the NSIDC (National Snow and Ice Data Center) dataset."
+        },
+        {
+          command: "Show Antarctic sea ice.",
+          description: "Displays Antarctic sea ice extent or area data."
+        },
+        {
+          command: "Show CO2.",
+          description: "Displays atmospheric carbon dioxide (CO2) data."
+        },
+        {
+          command: "Show Briffa's reconstruction.",
+          description: "Displays Briffa's Northern Hemisphere climate reconstruction data."
+        },
+        {
+          command: "Show hurricanes.",
+          description: "Displays hurricane data."
+        },
+        {
+          command: "Show forest fires.",
+          description: "Displays data on forest fires."
+        },
+        {
+          command: "Show ENSO.",
+          description: "Displays El Niño–Southern Oscillation (ENSO) data."
+        },
+        {
+          command: "Show La Nina.",
+          description: "Displays La Niña event data."
+        },
+        {
+          command: "Show El Nino.",
+          description: "Displays El Niño event data."
+        }
+      ]
+    },
+    {
+      title: "Financial & Miscellaneous Data",
+      commands: [
+        {
+          command: "Show Intel stock price.",
+          description: "Displays the current or historical stock price for Intel (INTC)."
+        },
+        {
+          command: "Show Nvidia stocks.",
+          description: "Displays the current or historical stock price for Nvidia (NVDA)."
+        },
+        {
+          command: "Show sunspots.",
+          description: "Displays historical sunspot count data."
+        },
+        {
+          command: "Show US population.",
+          description: "Displays US population data."
+        },
+        {
+          command: "Show map.",
+          description: "Displays a map relevant to the current data or context."
+        },
+        {
+          command: "Compare maps.",
+          description: "Displays a comparison between different maps."
+        }
+      ]
+    },
+    {
+      title: "Time Range Selection",
+      commands: [
+        {
+          command: "Plot the last five years.",
+          description: "Displays data for the most recent five years."
+        },
+        {
+          command: "Plot the last two months.",
+          description: "Displays data for the most recent two months."
+        },
+        {
+          command: "Plot the last sixty days.",
+          description: "Displays data for the most recent sixty days."
+        },
+        {
+          command: "Plot the last year.",
+          description: "Displays data for the most recent year."
+        },
+        {
+          command: "Show the last 120 years.",
+          description: "Displays data for the most recent 120 years."
+        },
+        {
+          command: "Show range 1957 to 1980.",
+          description: "Displays data from 1957 through 1980."
+        },
+        {
+          command: "Plot range 1963 to 1984.",
+          description: "Displays data from 1963 through 1984."
+        },
+        {
+          command: "Plot begin 1963.",
+          description: "Displays data starting from the year 1963."
+        },
+        {
+          command: "Plot start 1990.",
+          description: "Displays data starting from the year 1990."
+        },
+        {
+          command: "Plot end 2000.",
+          description: "Displays data up to the year 2000."
+        },
+        {
+          command: "Show full range.",
+          description: "Displays the entire available data range."
+        }
+      ]
+    },
+    {
+      title: "Chart Customization",
+      commands: [
+        {
+          command: "Center 32.",
+          description: "Centers the graph at the value 32."
+        },
+        {
+          command: "Set point size to 1.5.",
+          description: "Sets the size of points on the graph to 1.5."
+        },
+        {
+          command: "Set vertical lines to 14.",
+          description: "Displays 14 vertical grid lines on the graph."
+        },
+        {
+          command: "Set horizontal lines to 15.",
+          description: "Displays 15 horizontal grid lines on the graph."
+        },
+        {
+          command: "Set minimum to 12.",
+          description: "Sets the lower limit (minimum value) of the graph's Y-axis to 12."
+        },
+        {
+          command: "Set Y maximum to 22 thousand.",
+          description: "Sets the upper limit (maximum value) of the graph's Y-axis to 22,000."
+        },
+        {
+          command: "Set chart title to [your title].",
+          description: "Sets the main title of the chart."
+        },
+        {
+          command: "Set vertical title to [your title].",
+          description: "Sets the Y-axis (vertical) title of the chart."
+        },
+        {
+          command: "Set horizontal title to [your title].",
+          description: "Sets the X-axis (horizontal) title of the chart."
+        },
+        {
+          command: "Reset zoom.",
+          description: "Resets the graph's zoom to the default view."
+        }
+      ]
+    },
+    {
+      title: "Chart Types & Visualization",
+      commands: [
+        {
+          command: "Show bar chart.",
+          description: "Displays the data as a bar chart."
+        },
+        {
+          command: "Show line graph.",
+          description: "Displays the data as a line graph."
+        },
+        {
+          command: "Show scatter plot.",
+          description: "Displays the data as a scatter plot."
+        },
+        {
+          command: "Plot by year.",
+          description: "Displays data as a yearly plot."
+        },
+        {
+          command: "Plot trend.",
+          description: "Displays a trend line on the graph."
+        },
+        {
+          command: "Turn plot trend off.",
+          description: "Removes the trend line from the graph."
+        },
+        {
+          command: "Take screenshot.",
+          description: "Captures a screenshot of the current graph."
+        }
+      ]
+    },
+    {
+      title: "Data Analysis",
+      commands: [
+        {
+          command: "Explain the graph.",
+          description: "Provides a description or interpretation of the currently displayed graph."
+        },
+        {
+          command: "Show percent gain.",
+          description: "Displays the percent gain of the dataset over the selected period."
+        },
+        {
+          command: "Show annual growth.",
+          description: "Displays the annual growth rate of the data."
+        },
+        {
+          command: "Show difference.",
+          description: "Displays the difference between two data series."
+        },
+        {
+          command: "Show moving average 365.",
+          description: "Displays a moving average with a 365-day window."
+        },
+        {
+          command: "Show mean 12.",
+          description: "Displays a moving average with a 12-point window."
+        },
+        {
+          command: "Show FFT.",
+          description: "Displays the fast Fourier transform (FFT) of the data."
+        },
+        {
+          command: "Select all.",
+          description: "Selects all data points or series in the graph."
+        },
+        {
+          command: "Show annual range.",
+          description: "Displays the range of values for each year."
+        },
+        {
+          command: "Show required range 1921 to 2021.",
+          description: "Displays data for the specified range of years (1921 to 2021)."
+        },
+        {
+          command: "Show annual count.",
+          description: "Displays the annual count of the relevant data points."
+        },
+        {
+          command: "Show annual records.",
+          description: "Displays annual record values for the dataset."
+        },
+        {
+          command: "Show daily total.",
+          description: "Displays the daily total or sum of the relevant data."
+        },
+        {
+          command: "Show rank reverse.",
+          description: "Displays the data ranked in reverse order."
+        },
+        {
+          command: "Rank series.",
+          description: "Ranks the data series by value."
+        },
+        {
+          command: "Sort data.",
+          description: "Sorts the data in ascending or descending order."
+        }
+      ]
+    }
+  ];
   
   return (
     <Container maxW="container.xl" py={8}>
@@ -33,692 +468,22 @@ export default function PromptGuide() {
             Available Commands
           </Heading>
           <Text fontSize="lg" mb={6}>
-            Below is a comprehensive list of commands you can use with our graph interface. 
-            Each command has a description of what it does and a visual example of its output.
+            Below is a comprehensive list of commands you can use with our graph interface, organized by category. 
+            Each command has a description of what it does. Hover over any command to see a visual example of its output.
             For location-specific commands, replace [location] with your desired location (e.g., a state name like "Texas").
           </Text>
         </Box>
 
         <Divider />
 
-        <Box overflowX="auto">
-          <Table variant="simple">
-            <Thead>
-              <Tr>
-                <Th>Command</Th>
-                <Th>Description</Th>
-                <Th>Example Output</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              <Tr>
-                <Td><Code>What is the longest stretch of days over 90F in [location]?</Code></Td>
-                <Td>Finds the longest consecutive period where the daily maximum temperature exceeded 90°F in the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>What is the longest stretch of days below 30F in [location]?</Code></Td>
-                <Td>Finds the longest consecutive period where the daily maximum temperature was below 30°F in the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>What is the most days over 95F in [location] during a single year?</Code></Td>
-                <Td>Finds the year with the highest count of days above 95°F in the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>What is the most days below 20F in [location] during a single year?</Code></Td>
-                <Td>Finds the year with the highest count of days below 20°F in the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show all [location] daily maximum temperatures.</Code></Td>
-                <Td>Displays all recorded daily maximum temperatures for the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show all [location] daily minimum temperatures.</Code></Td>
-                <Td>Displays all recorded daily minimum temperatures for the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>List all days above 90 degrees in [location].</Code></Td>
-                <Td>Lists all dates where the daily maximum temperature exceeded 90°F in the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>List all days below 32 degrees in [location].</Code></Td>
-                <Td>Lists all dates where the daily maximum temperature was below 32°F in the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>List all days below minus four in [location].</Code></Td>
-                <Td>Lists all dates where the daily maximum temperature was below -4°F in the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show all [location] temperatures.</Code></Td>
-                <Td>Displays all available daily temperature data for the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show [location] drought.</Code></Td>
-                <Td>Displays drought index data (PDSI) for the specified location.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show drought.</Code></Td>
-                <Td>Displays drought index data (PDSI) for the United States.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show sunspots.</Code></Td>
-                <Td>Displays historical sunspot count data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Arctic sea ice.</Code></Td>
-                <Td>Displays Arctic sea ice extent or area data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Arctic sea ice OSI.</Code></Td>
-                <Td>Displays Arctic sea ice data from the OSI (Ocean and Sea Ice) dataset.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Arctic sea ice area.</Code></Td>
-                <Td>Displays the area of Arctic sea ice.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Arctic sea ice NSIDC.</Code></Td>
-                <Td>Displays Arctic sea ice data from the NSIDC (National Snow and Ice Data Center) dataset.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Antarctic sea ice.</Code></Td>
-                <Td>Displays Antarctic sea ice extent or area data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Intel stock price.</Code></Td>
-                <Td>Displays the current or historical stock price for Intel (INTC).</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Nvidia stocks.</Code></Td>
-                <Td>Displays the current or historical stock price for Nvidia (NVDA).</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Explain the graph.</Code></Td>
-                <Td>Provides a description or interpretation of the currently displayed graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot by year.</Code></Td>
-                <Td>Displays data as a yearly plot.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show percent gain.</Code></Td>
-                <Td>Displays the percent gain of the dataset over the selected period.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot the last five years.</Code></Td>
-                <Td>Displays data for the most recent five years.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot the last two months.</Code></Td>
-                <Td>Displays data for the most recent two months.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot the last sixty days.</Code></Td>
-                <Td>Displays data for the most recent sixty days.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot the last year.</Code></Td>
-                <Td>Displays data for the most recent year.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show the last 120 years.</Code></Td>
-                <Td>Displays data for the most recent 120 years.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show range 1957 to 1980.</Code></Td>
-                <Td>Displays data from 1957 through 1980.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot range 1963 to 1984.</Code></Td>
-                <Td>Displays data from 1963 through 1984.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot begin 1963.</Code></Td>
-                <Td>Displays data starting from the year 1963.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot start 1990.</Code></Td>
-                <Td>Displays data starting from the year 1990.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot end 2000.</Code></Td>
-                <Td>Displays data up to the year 2000.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show full range.</Code></Td>
-                <Td>Displays the entire available data range.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Center 32.</Code></Td>
-                <Td>Centers the graph at the value 32.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set point size to 1.5.</Code></Td>
-                <Td>Sets the size of points on the graph to 1.5.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set vertical lines to 14.</Code></Td>
-                <Td>Displays 14 vertical grid lines on the graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set horizontal lines to 15.</Code></Td>
-                <Td>Displays 15 horizontal grid lines on the graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set minimum to 12.</Code></Td>
-                <Td>Sets the lower limit (minimum value) of the graph's Y-axis to 12.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set Y maximum to 22 thousand.</Code></Td>
-                <Td>Sets the upper limit (maximum value) of the graph's Y-axis to 22,000.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show annual growth.</Code></Td>
-                <Td>Displays the annual growth rate of the data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show difference.</Code></Td>
-                <Td>Displays the difference between two data series.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show bar chart.</Code></Td>
-                <Td>Displays the data as a bar chart.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show line graph.</Code></Td>
-                <Td>Displays the data as a line graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show scatter plot.</Code></Td>
-                <Td>Displays the data as a scatter plot.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Plot trend.</Code></Td>
-                <Td>Displays a trend line on the graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Turn plot trend off.</Code></Td>
-                <Td>Removes the trend line from the graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Reset zoom.</Code></Td>
-                <Td>Resets the graph's zoom to the default view.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show moving average 365.</Code></Td>
-                <Td>Displays a moving average with a 365-day window.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show mean 12.</Code></Td>
-                <Td>Displays a moving average with a 12-point window.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show FFT.</Code></Td>
-                <Td>Displays the fast Fourier transform (FFT) of the data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set chart title to [your title].</Code></Td>
-                <Td>Sets the main title of the chart.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set vertical title to [your title].</Code></Td>
-                <Td>Sets the Y-axis (vertical) title of the chart.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Set horizontal title to [your title].</Code></Td>
-                <Td>Sets the X-axis (horizontal) title of the chart.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Take screenshot.</Code></Td>
-                <Td>Captures a screenshot of the current graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Select all.</Code></Td>
-                <Td>Selects all data points or series in the graph.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show US population.</Code></Td>
-                <Td>Displays US population data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show map.</Code></Td>
-                <Td>Displays a map relevant to the current data or context.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Compare maps.</Code></Td>
-                <Td>Displays a comparison between different maps.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show CO2.</Code></Td>
-                <Td>Displays atmospheric carbon dioxide (CO2) data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show Briffa's reconstruction.</Code></Td>
-                <Td>Displays Briffa's Northern Hemisphere climate reconstruction data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show hurricanes.</Code></Td>
-                <Td>Displays hurricane data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show forest fires.</Code></Td>
-                <Td>Displays data on forest fires.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show ENSO.</Code></Td>
-                <Td>Displays El Niño–Southern Oscillation (ENSO) data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show La Nina.</Code></Td>
-                <Td>Displays La Niña event data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show El Nino.</Code></Td>
-                <Td>Displays El Niño event data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show annual range.</Code></Td>
-                <Td>Displays the range of values for each year.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show required range 1921 to 2021.</Code></Td>
-                <Td>Displays data for the specified range of years (1921 to 2021).</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show annual count.</Code></Td>
-                <Td>Displays the annual count of the relevant data points.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show annual records.</Code></Td>
-                <Td>Displays annual record values for the dataset.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show daily total.</Code></Td>
-                <Td>Displays the daily total or sum of the relevant data.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Show rank reverse.</Code></Td>
-                <Td>Displays the data ranked in reverse order.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Rank series.</Code></Td>
-                <Td>Ranks the data series by value.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-              <Tr>
-                <Td><Code>Sort data.</Code></Td>
-                <Td>Sorts the data in ascending or descending order.</Td>
-                <Td>
-                  <Center bg={placeholderBg} p={4} borderRadius="md" h="150px" w="200px">
-                    <Text fontSize="sm" color="gray.500">GIF placeholder</Text>
-                  </Center>
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
+        <Box maxH="70vh" overflowY="auto" pr={2}>
+          {commandCategories.map((category, idx) => (
+            <CommandCategory 
+              key={idx} 
+              title={category.title} 
+              commands={category.commands} 
+            />
+          ))}
         </Box>
       </Stack>
     </Container>

@@ -29,7 +29,6 @@ const NavItem = ({ href, icon, children, isActive }: NavItemProps) => {
   const activeBg = useColorModeValue('blue.50', 'blue.900');
   
   return (
-    <NextLink href={href} passHref>
       <Link
         display="flex"
         alignItems="center"
@@ -46,11 +45,11 @@ const NavItem = ({ href, icon, children, isActive }: NavItemProps) => {
           transition: 'all 0.2s ease-in-out'
         }}
         transition="all 0.2s ease-in-out"
+        href={href}
       >
         <Icon as={icon} boxSize={5} color={isActive ? accentColor : "gray.500"} />
         <Text>{children}</Text>
       </Link>
-    </NextLink>
   );
 };
 
