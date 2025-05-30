@@ -4,9 +4,27 @@ import { useEffect, useState } from 'react';
 import { Box, Heading, Spinner, Center, Button, HStack, Icon, Text } from '@chakra-ui/react';
 import { FiMaximize2, FiExternalLink } from 'react-icons/fi';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { authStateChanged } from '../firebaseBridge';
 
 export default function GraphingWrapper() {
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
+  const router = useRouter();
+
+  // Check authentication state
+  useEffect(() => {
+    const unsubscribe = authStateChanged((user) => {
+      if (!user) {
+        // If no user is signed in, redirect to login
+        router.push('/login');
+      } else {
+        setAuthChecked(true);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   // Handle iframe loading
   const handleIframeLoad = () => {
@@ -17,6 +35,18 @@ export default function GraphingWrapper() {
   const openInNewWindow = () => {
     window.open('/graphing.html', '_blank');
   };
+
+  // Show loading state while checking auth
+  if (!authChecked) {
+    return (
+      <Center height="100vh">
+        <Box textAlign="center">
+          <Spinner size="xl" color="blue.500" thickness="4px" speed="0.65s" mb={4} />
+          <Heading size="md">Checking authentication...</Heading>
+        </Box>
+      </Center>
+    );
+  }
 
   return (
     <Box position="relative" height="calc(100vh - 80px)" width="100%">

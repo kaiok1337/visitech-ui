@@ -13,7 +13,6 @@ const NavbarWithKeyBinds = dynamic(
     <div style={{ padding: '1rem', borderBottom: '1px solid #eaeaea' }}>
       <a href="/" style={{ marginRight: '1rem' }}>Home</a>
       <a href="/login" style={{ marginRight: '1rem' }}>Login</a>
-      <a href="/graphing.html" style={{ marginRight: '1rem' }}>Graphing Tool</a>
     </div>
   )}
 );
