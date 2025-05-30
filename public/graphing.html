@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Graphing</title>
+    <link rel="stylesheet" href="./canvas.css" type="text/css">
+    <!-- Add Google Fonts to match Geist -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script> -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-auth-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.22.0/firebase-firestore-compat.min.js"></script>
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="index.js" defer></script>
+    <script type="module" src="duck.js"></script>
+    <script src="gpu-browser.js">defer</script>
+    <script src="https://code.jquery.com/jquery-3.5.0.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="graphingUtilities.js" defer></script>
+    <script src="temperatureUtilities.js" defer></script>
+    <script src="graphing.js" defer></script>
+    <script src="graphing2.js" defer></script>
+    <script src="charts.js" defer></script>
+    <script src="chatwindow.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fft.js/4.0.4/fft.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fourier-transform/1.1.2/fourier-transform.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <meta name="google-signin-client_id" content="848623190059-h3r9pffu6cc6ua7qqe8q8htuan2o601o.apps.googleusercontent.com">
+
+    <style>
+        /* Next.js/Chakra UI theme styling */
+        :root {
+            --chakra-blue: #3182ce;
+            --chakra-blue-hover: #2b6cb0;
+            --chakra-red: #e53e3e;
+            --chakra-red-hover: #c53030;
+            --chakra-gray-100: #f7fafc;
+            --chakra-gray-200: #edf2f7;
+            --chakra-gray-300: #e2e8f0;
+            --chakra-gray-600: #718096;
+            --app-background: #EAEFF6;
+            --app-foreground: #172536;
+        }
+        
+        /* Set background to match Next.js theme */
+        body {
+            background-color: var(--app-background) !important;
+            color: var(--app-foreground);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Remove custom cursor */
+        * {
+            cursor: auto !important;
+        }
+        
+        #custom-cursor {
+            display: none !important;
+        }
+        
+        /* Style buttons to match Chakra UI */
+        button {
+            font-family: 'Inter', sans-serif;
+            border-radius: 4px;
+            border: none;
+            transition: all 0.2s;
+            background-color: var(--chakra-gray-100);
+            color: #2D3748;
+        }
+        
+        button:hover {
+            background-color: var(--chakra-gray-200);
+        }
+        
+        /* Style primary action buttons */
+        #reset_zoom_button,
+        #screenshot_button,
+        #reset_button,
+        #add_data_button,
+        #add_clipboard_data_button,
+        #refresh_button,
+        #help_button,
+        #AI_query_button,
+        .chat-send-button {
+            background-color: var(--chakra-blue);
+            color: white;
+            font-weight: 500;
+        }
+        
+        #reset_zoom_button:hover,
+        #screenshot_button:hover,
+        #reset_button:hover,
+        #add_data_button:hover,
+        #add_clipboard_data_button:hover,
+        #refresh_button:hover,
+        #help_button:hover,
+        #AI_query_button:hover,
+        .chat-send-button:hover {
+            background-color: var(--chakra-blue-hover);
+        }
+        
+        /* Style danger buttons */
+        #cancel_subscription_button,
+        .unsubscribe-confirm-btn {
+            background-color: var(--chakra-red);
+            color: white;
+            font-weight: 500;
+        }
+        
+        #cancel_subscription_button:hover,
+        .unsubscribe-confirm-btn:hover {
+            background-color: var(--chakra-red-hover);
+        }
+        
+        /* Style select elements */
+        select {
+            border-radius: 4px;
+            border: 1px solid var(--chakra-gray-300);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Style inputs */
+        input[type="text"] {
+            border-radius: 4px;
+            border: 1px solid var(--chakra-gray-300);
+            font-family: 'Inter', sans-serif;
+            padding: 0.5rem;
+        }
+        
+        /* Style chat header */
+        .chat-header {
+            background-color: var(--chakra-blue);
+            color: white;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Style right side tab buttons */
+        .right-side-tab-button {
+            color: var(--chakra-gray-600);
+            transition: all 0.2s;
+        }
+        
+        .right-side-tab-button.right-side-active,
+        .right-side-tab-button:hover {
+            color: var(--chakra-blue);
+        }
+
+        /* Existing styles */
+        .image-container {
+          text-align: center;
+          margin: 20px;
+          position: relative;
+        }
+      
+        .img {
+          max-width: 100%;
+          height: auto;
+          border-radius: 5px;
+        }
+
+        * {
+            cursor: none;
+        }
+      
+        .text-overlay {
+          position: absolute;
+          bottom: 0;
+          left: -10%;
+          transform: translateY(50%);
+          color: red;
+          background-color: rgba(255, 255, 255, 0.0);
+          padding: 10px;
+          border-radius: 0 0 0px 0px;
+        }
+
+            /* Style for the loading overlay */
+        #loadingPopup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        display: none; /* Hidden by default */
+        }
+
+        /* Style for the loading spinner */
+        #loadingSpinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        }
+
+        /* Spinner animation */
+        @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+        }
+      
+        /* New style for body background */
+        /* body {
+          background-color: lightblue;
+        } */
+
+        .unsubscribe-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .unsubscribe-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+            min-width: 300px;
+        }
+
+        .unsubscribe-modal-header {
+            margin-bottom: 20px;
+        }
+
+        .unsubscribe-modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        } */
+
+        .unsubscribe-confirm-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .unsubscribe-confirm-btn:hover {
+            background-color: #c82333;
+        }
+
+        .unsubscribe-cancel-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .unsubscribe-cancel-btn:hover {
+            background-color: #5a6268;
+        }
+
+        #custom-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 2147483647;  /* Maximum possible z-index value */
+            width: 40px;
+            height: 40px;
+            display: none;
+            transform: translate(0, 0);
+        }   
+
+    </style>  
+    
+</head>
+
+  <!-- <body id="body" onload="main();" oncontextmenu="event.preventDefault();"> -->
+  <body id="body" onload="graphingMain();">
+        <!-- Loading popup -->
+    <div id="loadingPopup">
+        <div id="loadingSpinner"></div>
+    </div>
+    <button id="reset_zoom_button" onclick="resetZoom()">Reset Zoom</button>
+    <button id="help_button" onclick="help()">Help</button>
+    <select id="country_select">Country</select>
+    <select id="state_select">State</select>
+    <select id="series_select">Station</select>
+    <button id="series_select_passthrough_button">Station</button>
+    <select id="type_select">Station</select>
+    <select id="month_select">Month</select>
+    <button id="month_select_passthrough_button">Month</button>
+    <select id="day_select">Day</select>
+    <button id="day_select_passthrough_button">Day</button>
+    <select id="units_select">F</select>
+    <button id="screenshot_button" onclick="screenshot()">Screenshot</button>
+    <button id="reset_button" onclick="reload()">Reset</button>
+    <div id="right_side_controls_container">
+        <div id="plot_trend_label">Trend</div>
+        <input type="checkbox" id="plot_trend_checkbox" name="plot_trend_checkbox" value="plot_trend_checkbox">
+        <div id="plot_trends_label">Trends</div>
+        <input type="checkbox" id="plot_trends_checkbox" name="plot_trends_checkbox" value="plot_trends_checkbox">
+        <div id="lock_screen_label">Lock</div>
+        <input type="checkbox" id="lock_screen_checkbox" name="lock_screen_checkbox" value="lock_screen_checkbox">
+        <div id="draw_bar_chart_label">Bar Chart</div>
+        <input type="checkbox" id="draw_bar_chart_checkbox" name="draw_bar_chart_checkbox" value="draw_bar_chart_checkbox">
+        <div id="normalize_label">Normalize</div>
+        <input type="checkbox" id="normalize_checkbox" name="normalize_checkbox" value="normalize_checkbox">
+        <button id="add_data_button" onclick="addUserData()">Add Data</button>
+        <button id="add_clipboard_data_button" onclick="addClipboardDataButtonPressed()">Add Clipboard Data</button>
+        <button id="subscribe_button">Subscribe</button>
+        <button id="cancel_subscription_button">Unsubscribe</button>
+        <div id="pressed_keys_label"></div>
+    </div>
+    <button id="refresh_button" onclick="refresh()">Refresh</button>
+
+    <!-- <button id="google_earth_button" onclick="googleEarth()">Google Earth</button> -->
+    <div id="ui_container">
+        <img id="visitech_logo" src="visitech.png" alt="Visitech.ai Logo" width="120" height="auto">
+        <div id="main_title_label"></div>
+        <div id="y_axis_label">T e m p e r a t u r e - F</div>
+        <div id="column_chart_max_scale_label"></div>
+        <div id="column_chart_min_scale_label"></div>
+        <div id="column_chart_highlighted_label"></div>
+        <div id="pie_chart_highlighted_label"></div>
+        <div class="webgl-chart-legend" id="webgl_chart_legend_container"></div>
+        <div id="canvas_container">
+            <canvas id="glcanvas" width="1024" height="1024" style="border-radius: 5px;"></canvas>
+            <div id="instrumentation_container">
+                <div id="x_label">X</div>
+                <div id="y_label">Y</div>
+                <div id="name_label">Name</div>
+                <div id="state_label">State</div>
+                <div id="count_label">Count</div>
+                <div id="count_name_label">Count</div>
+                <div id="month_label">Month</div>
+                <div id="day_label">Day</div>
+                <div id="average_label">Average</div>
+                <div id="selected_average_label">Average</div>
+                <div id="average_name_label">Average (F)</div>
+                <div id="sum_label">Sum</div>
+                <div id="selected_sum_label">Sum</div>
+                <div id="sum_name_label">Sum (F)</div>
+                <div id="trend_label">Trend</div>
+                <div id="selected_trend_label">Trend</div>
+                <div id="trend_name_label">Trend</div>
+                <!-- <div id="curvature_label">Curvature</div>
+                <div id="curvature_name_label">Curvature</div> -->
+                <div id="series_count_label">Series Count</div>
+                <div id="series_count_name_label">Series Count</div>
+                <div id="day_count_label">Day Count</div>
+                <div id="day_count_name_label">Day Count</div>
+                <div id="disclaimer_label">Visitech can make mistakes. Please double-check responses.</div>
+                <!-- <button id="realclimatescience_button" onclick="realClimateScienceButtonPressed()">
+                    <img src="toto-wizard-of-oz-color-1.jpg" width="100" height="25">
+                    <div class="text-overlay">
+                        <p><strong>realclimatescience</strong></p>
+                    </div>
+                </button> -->
+            </div>
+            <div id="x_axis_label">Date</div>
+        </div>
+    </div>
+    <div id = "canvas_2D_container">
+        <canvas id="canvas2D"></canvas>
+        <canvas id="canvas2D_2"></canvas>
+        <canvas id="canvas2D_3"></canvas>
+        <canvas id="canvas2D_4"></canvas>
+        <img id="main_visitech_logo" src="visitech.png" alt="Visitech.ai Logo" width="600" height="auto">
+    </div>
+    <div id="outer_controls_container">
+        <div class="toggle-wrapper">
+            <div class="hamburger" id="toggleHamburger">
+                <div class="hamburger-line line-1"></div>
+                <div class="hamburger-line line-2"></div>
+                <div class="hamburger-line line-3"></div>
+            </div>
+            <span class="toggle-text" id="toggleText">Show Controls</span>
+        </div>
+        <div id="controls_container">
+            <div id="graphing_controls_container">
+                <select id="search_type_select">Search Type</select>
+                <input type="text" id="search_parameter_1_input" placeholder="value">
+                <button id="search_button" onclick="search()">Search</button>
+                <label id="minimum_x_label">Minimum X <input type="text" id="minimum_x_input"/></label>
+                <label id="maximum_x_label">Maximum X <input type="text" id="maximum_x_input"/></label>
+                <label id="minimum_y_label">Minimum Y <input type="text" id="minimum_y_input"/></label>
+                <label id="maximum_y_label">Maximum Y <input type="text" id="maximum_y_input"/></label>
+                <!-- <input type="text" id="station_information_label" readonly> -->
+                <label id="station_information_label">Series Information <input type="text" id="station_information_input" readonly/></label>
+            </div>
+            <!-- <label id="main_title_input_label">Main Title <input type="text" id="main_title_input"/></label>
+            <label id="vertical_axis_title_input_label">Vertical Axis Title <input type="text" id="vertical_axis_title_input"/></label>
+            <label id="horizontal_axis_title_input_label">Horizontal Axis Title <input type="text" id="horizontal_axis_title_input"/></label>
+            <select id="main_title_text_select" onchange="selectMainTitleText()">
+                <option value="">Select a saved main title text</option>
+            </select>
+            <button id="main_title_text_delete_button"onclick="deleteSelectedMainTitleText()">Delete Selected</button> -->
+            <label id="main_title_input_label">
+                Main Title
+                <input type="text" id="main_title_input" />
+            </label>
+            
+            <label id="vertical_axis_title_input_label">
+                Vertical Axis Title
+                <input type="text" id="vertical_axis_title_input" />
+            </label>
+            
+            <label id="horizontal_axis_title_input_label">
+                Horizontal Axis Title
+                <input type="text" id="horizontal_axis_title_input" />
+            </label>
+            
+            <select id="main_title_text_select" onchange="selectMainTitleText()">
+                <option value="">Select a saved main title text</option>
+            </select>
+            
+            <button id="main_title_text_delete_button" onclick="deleteSelectedMainTitleText()">
+                Delete
+            </button>
+
+            <div id="AI_controls_container">
+                <button id="AI_query_mic_button">
+                    <img src="microphone.png" alt="Microphone" width="16" height="16">
+                </button>
+                <label id="AI_query_input_label">AI Query Text <input type="text" id="AI_query_input"/></label>
+                <button id="AI_query_button"onclick="interpretAIQueryOld("suggestions")">Submit Query</button>
+            </div>
+            <!-- <button id="logout_button" onclick="signOut()">Logout</button> -->
+        </div>
+    </div>
+
+    <div id="unsubscribeModalOverlay" class="unsubscribe-modal-overlay">
+        <div class="unsubscribe-modal">
+            <div class="unsubscribe-modal-header">
+                <h3>Confirm Unsubscribe</h3>
+            </div>
+            <div class="unsubscribe-modal-content">
+                Do you really want to unsubscribe?
+            </div>
+            <div class="unsubscribe-modal-buttons">
+                <button class="unsubscribe-cancel-btn" onclick="hideUnsubscribeModal()">Cancel</button>
+                <button class="unsubscribe-confirm-btn" onclick="handleUnsubscribeConfirm()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+
+    <button class="sidebar-trigger-btn" aria-label="Open sidebar">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+    
+    <div class="sidebar-overlay"></div>
+    
+    <div class="sidebar-container">
+        <div class="sidebar-header">
+            <h2>Visitech</h2>
+            <button class="sidebar-close-btn" aria-label="Close sidebar">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div class="sidebar-content">
+            <nav class="sidebar-nav">
+                <a href="https://www.youtube.com/@visitech-videos" class="sidebar-nav-link" target="_blank">Video Tutorials</a>
+                <a href="#" onclick="openSettings(); return false;" class="sidebar-nav-link">Settings</a>
+                <a href="./bug-tracker.html" class="sidebar-nav-link" id="bug-tracker-link">Bug Tracker</a>
+                <a href="./feature-tracker.html" class="sidebar-nav-link" id="feature-tracker-link">Feature Requests</a>
+                <a href="./help-page.html" class="sidebar-nav-link" target="_blank">Help</a>
+                <div class="sidebar-nav-link">Contact Email : contact@visitech.ai</div>
+                <a href="#" onclick="signOut(); return false;" class="sidebar-nav-link" style="color: white; background-color: #dc2626; margin-top: auto;">Log Out</a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- End Sidebar -->
+
+    <svg id="custom-cursor" viewBox="0 0 32 32">
+        <!-- White outline -->
+        <path d="M0,0 L0,16 L5,11 L8,18 L11,17 L8,10 L14,10 L0,0" 
+              fill="white" 
+              stroke="white" 
+              stroke-width="2"/>
+        <!-- Black fill -->
+        <path d="M0,0 L0,16 L5,11 L8,18 L11,17 L8,10 L14,10 L0,0" 
+              fill="black"/>
+    </svg>
+
+    <div id="google_map_container" style="width:30%;height:500px;left:60%;bottom:50%"></div>
+    <div id="chat-outer-container" style="width:30%;height:700px;left:60%;bottom:40%">
+        <div class="chat-container" id="chat-container">
+            <div class="chat-header">Visitech Chat</div>
+            <div class="chat-messages-container" id="chat-messages-area">
+                <!-- Messages will be added here dynamically -->
+            </div>
+            <div class="chat-input-area">
+                <button id="chat-mic-button" class="chat-mic-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+                <input type="text" id="chat-message-input" class="chat-input-field" placeholder="Type a message...">
+                <button id="chat-send-button" class="chat-send-button">Send</button>
+            </div>
+        </div>        
+    </div>
+    <!-- Tab Selector (Left Side) -->
+    <div class="right-side-tab-selector">
+        <button class="right-side-tab-button right-side-active" data-tab="chat">
+        <svg class="right-side-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="right-side-tab-label">Chat</span>
+        </button>
+        
+        <button class="right-side-tab-button" data-tab="map">
+        <svg class="right-side-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
+            <line x1="8" y1="2" x2="8" y2="18"></line>
+            <line x1="16" y1="6" x2="16" y2="22"></line>
+        </svg>
+        <span class="right-side-tab-label">Map</span>
+        </button>
+        
+        <button class="right-side-tab-button" data-tab="images">
+        <svg class="right-side-tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        <span class="right-side-tab-label">Images</span>
+        </button>
+    </div>    
+</body>
+</html>

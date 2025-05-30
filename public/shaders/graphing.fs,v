@@ -1,0 +1,162 @@
+head	2.49;
+access;
+symbols;
+locks
+	tony:2.49; strict;
+comment	@# @;
+
+
+2.49
+date	2023.02.24.00.17.30;	author tony;	state Exp;
+branches;
+next	2.48;
+
+2.48
+date	2023.02.23.23.29.39;	author tony;	state Exp;
+branches;
+next	2.47;
+
+2.47
+date	2023.02.23.20.37.53;	author tony;	state Exp;
+branches;
+next	2.46;
+
+2.46
+date	2023.02.19.23.30.32;	author tony;	state Exp;
+branches;
+next	2.45;
+
+2.45
+date	2023.02.19.23.19.31;	author tony;	state Exp;
+branches;
+next	2.44;
+
+2.44
+date	2023.02.19.21.24.32;	author tony;	state Exp;
+branches;
+next	2.43;
+
+2.43
+date	2023.02.19.21.01.32;	author tony;	state Exp;
+branches;
+next	2.42;
+
+2.42
+date	2023.02.19.20.48.10;	author tony;	state Exp;
+branches;
+next	2.41;
+
+2.41
+date	2023.02.19.16.44.52;	author tony;	state Exp;
+branches;
+next	2.40;
+
+2.40
+date	2023.02.19.16.44.35;	author tony;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2023.01.28.05.56.37;	author tony;	state Exp;
+branches;
+next	;
+
+
+desc
+@I don't trust git
+@
+
+
+2.49
+log
+@More multi-select 2
+@
+text
+@precision mediump float;
+uniform vec4 color;
+
+void main()
+{
+    gl_FragColor = color;
+}
+@
+
+
+2.48
+log
+@More multi-select
+@
+text
+@@
+
+
+2.47
+log
+@adding day select multi
+@
+text
+@@
+
+
+2.46
+log
+@month multi-select working 4
+@
+text
+@@
+
+
+2.45
+log
+@month multi-select working 3
+@
+text
+@@
+
+
+2.44
+log
+@month multi-select working 2
+@
+text
+@@
+
+
+2.43
+log
+@month multi-select working
+@
+text
+@@
+
+
+2.42
+log
+@Starting to add month multiselect
+@
+text
+@@
+
+
+2.41
+log
+@Starting to add multiselects
+@
+text
+@@
+
+
+2.40
+log
+@Starting to add multiselects
+@
+text
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@@

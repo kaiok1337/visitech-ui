@@ -1,0 +1,1025 @@
+body 
+{
+    font-family: 'Copernicus';
+    background-color: #f8f8ee;
+}
+
+
+#reset_zoom_button,
+#help_button,
+#country_select,
+#state_select,
+#series_select,
+#series_select_passthrough_button,
+#type_select,
+#month_select,
+#month_select_passthrough_button,
+#day_select,
+#day_select_passthrough_button,
+#units_select,
+#y_axis_label,
+#screenshot_button,
+#reset_button,
+#plot_trend_checkbox,
+#plot_trends_checkbox,
+#plot_trend_label,
+#plot_trends_label,
+#lock_screen_checkbox,
+#lock_screen_label,
+#draw_bar_chart_checkbox,
+#draw_bar_chart_label,
+#normalize_checkbox,
+#normalize_label,
+#add_data_button,
+#add_clipboard_data_button,
+#refresh_button,
+#pressed_keys_label
+/* #google_earth_button */
+{
+    top: 5px;
+    height: 50px;
+    font: "Roboto";
+    font-size: 14px;
+    color: black;
+    background-color: white;
+    border-color: grey;
+    border-width: 2px;    
+    z-index: 100;
+}
+
+#screenshot_button,
+#help_button,
+#reset_button,
+#add_data_button,
+#subscribe_button,
+#cancel_subscription_button,
+#add_clipboard_data_button,
+#reset_zoom_button,
+main_title_text_delete_button
+{
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline */
+    display: inline-block; /* Make the button inline */
+    font-size: 14px; /* Increase font size */
+    cursor: pointer; /* Pointer/hand icon on hover */
+    border-radius: 5px; /* Make the corners rounded */
+    transition: background-color 0.3s ease; /* Add transition for hover effect */
+}
+
+
+#series_select_passthrough_button
+{
+    z-index: 0;
+}
+
+#reset_zoom_button
+{
+    position: absolute;
+    left: 160px;
+    width: 120px;
+}
+
+#help_button
+{
+    position: absolute;
+    left: 300px;
+    width: 70px;
+}
+
+#country_select
+{
+    position: absolute;
+    left: 500px;
+    width: 60px;
+}
+
+#state_select
+{
+    position: absolute;
+    left: 500px;
+    width: 60px;
+}
+
+#series_select,
+#series_select_passthrough_button
+{
+    position: absolute;
+    left: 590px;
+    width: 300px;
+}
+
+#type_select
+{
+    position: absolute;
+    left: 590px;
+    width: 80px;
+}
+
+#month_select,
+#month_select_passthrough_button
+{
+    position: absolute;
+    left: 1000px;
+    width: 90px;
+}
+
+#day_select,
+#day_select_passthrough_button
+{
+    position: absolute;
+    left: 1100px;
+    width: 80px;
+}
+
+#units_select
+{
+    position: absolute;
+    width: 40px;
+}
+
+#y_axis_label
+{
+    position: absolute;
+    width: 5px;
+    height: 100px;
+}
+
+#screenshot_button
+{
+    position: absolute;
+    width: 110px;
+}
+
+#reset_button
+{
+    position: absolute;
+    width: 60px;
+}
+
+#plot_trend_label,
+#plot_trends_label
+{
+    position: absolute;
+    width: 45px;
+    height: 30px;
+    top: 5px;
+}
+
+#plot_trend_checkbox,
+#plot_trends_checkbox
+{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 30px;
+    left: 19%;   
+}
+
+#lock_screen_label
+{
+    position: absolute;
+    width: 25px;
+    height: 30px;
+    top: 5px;
+}
+
+#lock_screen_checkbox
+{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 30px;
+    left: 19%;   
+}
+
+#draw_bar_chart_label
+{
+    position: absolute;
+    width: 60px;
+    height: 30px;
+    top: 5px;
+}
+
+#draw_bar_chart_checkbox
+{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 30px;
+    left: 21%;   
+}
+
+#normalize_label
+{
+    position: absolute;
+    width: 40px;
+    height: 30px;
+    top: 5px;
+}
+
+#normalize_checkbox
+{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 30px;
+    left: 19%;   
+}
+
+/* #state_select_label
+{
+    position: absolute;
+    left: 480px;
+    width: 80px;
+} */
+
+#glcanvas
+{
+    position: relative;
+    top: 0px;
+}
+
+#canvas2D,
+#canvas2D_2,
+#canvas2D_3,
+#canvas2D_4
+{
+    position: absolute;
+}
+
+#instrumentation_container
+{
+    z-index: 100;
+    height: 150px;
+    width: 100%;
+    left: 0px;
+    bottom: 30px;
+    position: absolute;
+}
+
+#controls_container
+{
+    height: 150px;
+    width: 100%;
+    left: 0px;
+    top: 5px;
+    position: relative;
+}
+
+/* #main_title_input_label 
+{
+    font-size: 12px;
+} */
+
+#main_title_input_label,
+#vertical_axis_title_input_label, 
+#horizontal_axis_title_input_label,
+#main_title_text_select_label,
+#AI_query_input_label,
+#station_information_label
+{
+    display: block;
+    color: darkred;
+    margin: 10px auto; /* Centers the label horizontally */
+    width: 45%; /* Sets the exact width for the text */
+    text-align: right; /* Aligns the text to the right within its block */
+    /* padding-right: 50px; Adds some spacing between the text and input */
+}
+
+#main_title_input,
+#vertical_axis_title_input, 
+#horizontal_axis_title_input,
+#main_title_text_select,
+#AI_query_input
+{
+    /* font-size: 16px;
+    font-family: arial, sans-serif; */
+    height: 40px;
+    /* width: 900px; */
+    width: 80%;
+}
+
+#search_parameter_1_input,
+#minimum_x_input,
+#maximum_x_input,
+#minimum_y_input,
+#maximum_y_input,
+#search_button,
+#search_type_select
+{
+    height: 30px;
+}
+
+#station_information_input
+{
+    width: 80%;
+    height: 30px;
+}
+
+#station_information_label
+{
+    width: 45%;
+    text-align: right;
+    color: black;
+}
+
+#x_label,
+#y_label,
+#name_label,
+#state_label,
+#count_label,
+#average_label,
+#selected_average_label,
+#selected_trend_label,
+#selected_sum_label,
+#sum_label,
+#trend_label,
+/* #curvature_label, */
+#series_count_label,
+#day_count_label
+{
+    position: absolute;
+    z-index: 1;
+    bottom: 0px;
+    font-size: 12px;
+    color: black;
+    background-color: #bee3f8;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#disclaimer_label
+{
+    position: absolute;
+    z-index: 1;
+    bottom: 0px;
+    font-size: 14px;
+    color: grey;
+    text-align: center;
+}
+
+#month_label,
+#day_label
+{
+    position: absolute;
+    bottom: 0px;
+    font-size: 24px;
+    color: black;
+    background-color: #bee3f8;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#x_label
+{
+    left: 5px;
+    width: 90px;
+    text-align: center;
+}
+
+#y_label
+{
+    left: 110px;
+    width: 90px;
+}
+
+#name_label
+{
+    left: 210px;
+    width: 250px;
+}
+
+#state_label
+{
+    left: 470px;
+    width: 45px;
+}
+
+#month_label
+{
+    left: 525px;
+    width: 80px;
+}
+
+#day_label
+{
+    left: 615px;
+    width: 45px;
+}
+
+#count_label,
+#count_name_label
+{
+    width: 95px;
+}
+
+
+#average_label,
+#selected_average_label,
+#selected_trend_label,
+#selected_sum_label,
+#sum_label,
+#sum_name_label,
+#trend_label,
+#trend_name_label
+/* #curvature_label,
+#curvature_name_label, */
+{
+    width: 100px;
+}
+
+#day_count_label,
+#day_count_name_label,
+#series_count_label,
+#series_count_name_label
+{
+    width: 80px;
+}
+
+#average_name_label
+{
+    width: 120px;
+}
+
+#realclimatescience_button
+{
+    position: absolute;
+    right: 30px;
+    top: -695px;
+    border: 0px;
+    font-size: 12px;
+    text-align: center;
+}
+
+#count_name_label,
+#average_name_label,
+#sum_name_label,
+#trend_name_label,
+/* #curvature_name_label, */
+#series_count_name_label,
+#day_count_name_label
+{
+    position: absolute;
+    top: 25px;
+    font-size: 14px;
+    color: black;
+    text-align: center;
+}
+
+#search_type_select
+{
+    position: absolute;
+    left: 10px;
+    width: 200px;
+}
+
+#search_button
+{
+    position: absolute;
+    left: 10px;
+    width: 50px;
+}
+
+video 
+{
+	display: none;
+}
+
+#AI_query_mic_button {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #44ff44;
+}
+#AI_query_mic_button i {
+    font-size: 24px;
+}
+
+/* Sidebar */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 150px); /* Adjust the height to fill available space */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+} */
+
+.sidebar-trigger-btn {
+    position: fixed;
+    top: calc(env(safe-area-inset-top, 0) + 1rem); /* Accounts for safe areas on mobile */
+    right: calc(env(safe-area-inset-right, 0) + 1rem); /* Keeps it visible on scaling */
+    padding: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 1000;
+    transform: scale(1); /* Default scale for visibility */
+    transition: transform 0.2s ease-in-out; /* Smooth scaling on hover */
+}
+
+.sidebar-trigger-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    transform: scale(1.1); /* Slight zoom on hover for better user feedback */
+}
+
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    right: -256px;
+    width: 256px;
+    height: 100%;
+    background: white;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+    z-index: 2000;
+}
+
+.sidebar-container.sidebar-open {
+    transform: translateX(-256px);
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-close-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.sidebar-close-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-content {
+    padding: 1rem;
+    padding-bottom: 5%; /* Add extra padding at bottom */
+}
+
+.sidebar-nav-link {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #333;
+    text-decoration: none;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out;
+    z-index: 999;
+}
+
+.sidebar-overlay.sidebar-overlay-active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* End Sidebar */
+
+#visitech_logo {
+    transition: opacity 0.3s ease; /* Smooth transition effect */
+}
+
+#visitech_logo:hover {
+    opacity: 0.6; /* Slightly transparent on hover */
+    /* Alternative effects you might prefer:
+    filter: brightness(1.1);  /* Makes it slightly brighter */
+    /* transform: scale(1.05);  /* Slightly enlarges it */
+    /* Other possibilities:
+       - Add a shadow
+       - Change the border
+       - Change the background
+    */
+}
+
+.webgl-chart-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.webgl-chart-visualization {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1;
+    min-width: 500px;
+}
+.webgl-chart-controls {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    flex: 1;
+    min-width: 300px;
+}
+.webgl-chart-legend {
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+    bottom: 5%;
+    z-index: 1000;
+}
+.webgl-chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background: #f8f8f8;
+}
+.webgl-chart-color-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+}
+.webgl-chart-data-input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.webgl-chart-form-input, 
+.webgl-chart-type-selector {
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.webgl-chart-button {
+    padding: 8px 16px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.webgl-chart-button:hover {
+    background: #0056b3;
+}
+.webgl-chart-tooltip {
+    position: absolute;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 14px;
+    pointer-events: none;
+    display: none;
+}
+
+/* Chat styling with chat- prefixes for all classes */
+.chat-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0);
+    font-family: Arial, sans-serif;
+}
+
+.chat-header {
+    background-color: #3498db;
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.chat-messages-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* .chat-message {
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    word-wrap: break-word;
+}
+
+.chat-message-user {
+    align-self: flex-end;
+    background-color: #3498db;
+    color: white;
+    border-bottom-right-radius: 5px;
+}
+
+.chat-message-other {
+    align-self: flex-start;
+    background-color: #e9e9e9;
+    color: #333;
+    border-bottom-left-radius: 5px;
+} */
+
+.chat-message {
+    width: 80%; /* Or whatever percentage you prefer */
+    box-sizing: border-box;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+  
+  .chat-message-user {
+    background-color: #e3f2fd;
+    margin-left: auto; /* Push to the right side */
+    margin-right: 0;
+  }
+  
+  .chat-message-other {
+    background-color: #f5f5f5;
+    margin-left: 0;
+    margin-right: auto; /* Push to the left side */
+  }
+
+.chat-input-area {
+    display: flex;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #ddd;
+    align-items: center;
+}
+
+.chat-input-field {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    outline: none;
+    font-size: 14px;
+}
+
+.chat-mic-button {
+    padding: 10px;
+    background-color: transparent;
+    color: #3498db;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.chat-mic-button:hover {
+    background-color: rgba(52, 152, 219, 0.1);
+}
+
+.chat-mic-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+.chat-send-button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.chat-send-button:hover {
+    background-color: #2980b9;
+}
+
+.chat-message-time {
+    font-size: 11px;
+    opacity: 0.7;
+    margin-top: 5px;
+    display: block;
+}
+
+/* Example container div */
+#chat-outer-container {
+    padding: 20px;
+    background-color: #eaeaea;
+    border-radius: 15px;
+}
+
+  /* #main_title_input_label,
+  #vertical_axis_title_input_label,
+  #horizontal_axis_title_input_label {
+    display: block;
+    font-weight: bold;
+    margin-top: 1em;
+    color: #800000;
+    font-family: sans-serif;
+  }
+
+  #main_title_input,
+  #vertical_axis_title_input,
+  #horizontal_axis_title_input,
+  #main_title_text_select {
+    display: block;
+    width: 100%;
+    padding: 0.6em;
+    margin-top: 0.3em;
+    margin-bottom: 1em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+    box-sizing: border-box;
+    font-family: sans-serif;
+  } */
+
+  .hidden {
+    display: none;
+  }
+  
+  #main_title_text_delete_button {
+    background-color: #4a64ff;
+    color: white;
+    padding: 0.6em 1.2em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    font-family: sans-serif;
+  }
+
+  #main_title_text_delete_button:hover {
+    background-color: #2e4bcc;
+  }
+
+  .right-side-container {
+    display: flex;
+    height: 400px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 20px;
+  }
+  
+  .right-side-tab-selector {
+    width: 64px;
+    background-color: #f7fafc;
+    border-right: 1px solid #e2e8f0;
+  }
+  
+  .right-side-tab-button {
+    width: 100%;
+    padding: 12px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #718096;
+  }
+  
+  .right-side-tab-button:hover {
+    background-color: #dde2e7;
+  }
+  
+  .right-side-tab-button.right-side-active {
+    color: #3182ce;
+    background-color: #fff;
+    border-right: 2px solid #3182ce;
+  }
+  
+  .right-side-tab-icon {
+    margin-bottom: 4px;
+  }
+  
+  .right-side-tab-label {
+    font-size: 12px;
+  }
+  
+  .right-side-content-area {
+    flex-grow: 1;
+    background-color: #fff;
+  }
+  
+  .right-side-tab-content {
+    display: none;
+    padding: 16px;
+    height: 100%;
+  }
+  
+  .right-side-tab-content.right-side-active {
+    display: block;
+  }
+  
+  .right-side-heading {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  /* Hamburger Menu Styles */
+  .hamburger {
+    width: 25px;
+    height: 20px;
+    margin-left: 20px;
+    margin-top: 10px;
+    position: relative;
+    cursor: pointer;
+    display: inline-block;
+    /* margin: 20px 0px; */
+    }
+
+    .hamburger-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background-color: #333;
+        border-radius: 0px;
+        transition: all 0.3s ease;
+    }
+
+    .line-1 {
+        top: 1px;
+    }
+
+    .line-2 {
+        top: 6px;
+    }
+
+    .line-3 {
+        top: 11px;
+    }
+
+    /* Animation for the hamburger when active */
+    /* .hamburger.active .line-1 {
+        transform: translateY(13px) rotate(45deg);
+    }
+
+    .hamburger.active .line-2 {
+        opacity: 0;
+    }
+
+    .hamburger.active .line-3 {
+        transform: translateY(-13px) rotate(-45deg);
+    } */
+
+    .toggle-text {
+        display: inline-block;
+        top: 15px;
+        margin-left: 10px;
+        margin-top: 5px;
+        vertical-align: top;
+        line-height: 25px;
+    }
+
+    .toggle-wrapper
+    {
+        height: 30px;
+    }

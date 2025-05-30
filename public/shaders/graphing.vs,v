@@ -1,0 +1,219 @@
+head	2.51;
+access;
+symbols;
+locks
+	tony:2.51; strict;
+comment	@# @;
+
+
+2.51
+date	2023.12.21.03.53.39;	author tony;	state Exp;
+branches;
+next	2.50;
+
+2.50
+date	2023.12.21.03.16.39;	author tony;	state Exp;
+branches;
+next	2.49;
+
+2.49
+date	2023.02.24.00.17.30;	author tony;	state Exp;
+branches;
+next	2.48;
+
+2.48
+date	2023.02.23.23.29.39;	author tony;	state Exp;
+branches;
+next	2.47;
+
+2.47
+date	2023.02.23.20.37.53;	author tony;	state Exp;
+branches;
+next	2.46;
+
+2.46
+date	2023.02.19.23.30.32;	author tony;	state Exp;
+branches;
+next	2.45;
+
+2.45
+date	2023.02.19.23.19.31;	author tony;	state Exp;
+branches;
+next	2.44;
+
+2.44
+date	2023.02.19.21.24.32;	author tony;	state Exp;
+branches;
+next	2.43;
+
+2.43
+date	2023.02.19.21.01.32;	author tony;	state Exp;
+branches;
+next	2.42;
+
+2.42
+date	2023.02.19.20.48.10;	author tony;	state Exp;
+branches;
+next	2.41;
+
+2.41
+date	2023.02.19.16.44.52;	author tony;	state Exp;
+branches;
+next	2.40;
+
+2.40
+date	2023.02.19.16.44.35;	author tony;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2023.01.28.05.56.37;	author tony;	state Exp;
+branches;
+next	;
+
+
+desc
+@I don't trust git
+@
+
+
+2.51
+log
+@Color fixes
+@
+text
+@precision mediump float;
+attribute vec2 raw_coordinates;
+uniform float point_size;
+uniform float min_x;
+uniform float max_x;
+uniform float min_y;
+uniform float max_y;
+uniform float x_offset;
+uniform float y_offset;
+uniform mat4 modelview_matrix;
+
+void main(void)
+{
+    gl_PointSize = point_size;
+    lowp float x_range = max_x - min_x;
+    lowp float y_range = max_y - min_y;
+    float x_position = (((raw_coordinates.x + x_offset - min_x) / x_range) * 2.0) - 1.0;
+    float y_position;
+
+    if (y_range > 0.0)
+    {
+        y_position = (((raw_coordinates.y + y_offset - min_y) / y_range) * 2.0) - 1.0;
+    }
+    else
+    {
+        y_position = 0.0;
+    }
+
+    gl_Position = modelview_matrix * vec4(x_position, y_position, 0.0, 1.0);
+}
+@
+
+
+2.50
+log
+@first
+@
+text
+@@
+
+
+2.49
+log
+@More multi-select 2
+@
+text
+@d17 1
+a17 2
+    float x_position = (((raw_coordinates.x - min_x) / x_range) * 2.0) - 1.0;
+    x_position += x_offset;
+d22 1
+a22 2
+        y_position = (((raw_coordinates.y - min_y) / y_range) * 2.0) - 1.0;
+        y_position += y_offset;
+@
+
+
+2.48
+log
+@More multi-select
+@
+text
+@@
+
+
+2.47
+log
+@adding day select multi
+@
+text
+@@
+
+
+2.46
+log
+@month multi-select working 4
+@
+text
+@@
+
+
+2.45
+log
+@month multi-select working 3
+@
+text
+@@
+
+
+2.44
+log
+@month multi-select working 2
+@
+text
+@@
+
+
+2.43
+log
+@month multi-select working
+@
+text
+@@
+
+
+2.42
+log
+@Starting to add month multiselect
+@
+text
+@@
+
+
+2.41
+log
+@Starting to add multiselects
+@
+text
+@@
+
+
+2.40
+log
+@Starting to add multiselects
+@
+text
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@@
